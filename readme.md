@@ -41,6 +41,23 @@ O script foi projetado para ajudar administradores de sistemas, profissionais de
 
 > 💡 Se alguma ferramenta não estiver instalada, o script sugere a instalação automaticamente.
 
+## ⚡ Quick Start - Exportar Relatórios
+
+```bash
+# Executar no terminal (padrão)
+sudo ./security_checklist.sh
+
+# Exportar para HTML
+sudo ./security_checklist.sh -f html
+
+# Exportar para CSV
+sudo ./security_checklist.sh -f csv
+
+# Exportar com nome personalizado
+sudo ./security_checklist.sh -f html -o relatorio_seguranca.html
+sudo ./security_checklist.sh -f csv -o auditoria.csv
+```
+
 ## 🚀 Instalação e Uso
 
 ### 1. Clone o repositório
