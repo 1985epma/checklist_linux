@@ -59,32 +59,75 @@ chmod +x security_checklist.sh
 ### 3. Execute o script
 
 ```bash
+# Saída no terminal (padrão)
 sudo ./security_checklist.sh
+
+# Gerar relatório HTML
+sudo ./security_checklist.sh -f html
+
+# Gerar relatório CSV
+sudo ./security_checklist.sh -f csv
+
+# Especificar nome do arquivo de saída
+sudo ./security_checklist.sh -f html -o meu_relatorio.html
+sudo ./security_checklist.sh --format csv --output security_audit.csv
 ```
 
-## 📊 Exemplo de Saída
+### Opções disponíveis
+
+| Opção | Descrição |
+|-------|-----------|
+| `-f, --format` | Formato de saída: `terminal` (padrão), `html`, `csv` |
+| `-o, --output` | Nome do arquivo de saída |
+| `-h, --help` | Mostrar ajuda |
+
+## 📊 Exemplo de Saída (Terminal)
 
 ```
-=== Checklist de Segurança no Ubuntu Linux ===
-Data/Hora: Sáb 21 Dez 2025 10:30:00 -03
-Hostname: meu-servidor
-Versão do Ubuntu: Ubuntu 24.04 LTS
+╔══════════════════════════════════════════════════════════════╗
+║      🛡️  CHECKLIST DE SEGURANÇA - UBUNTU LINUX  🛡️           ║
+╚══════════════════════════════════════════════════════════════╝
 
-1. Atualizações do Sistema:
-  - Sistema atualizado.
+📅 Data/Hora: Sáb 21 Dez 2025 10:30:00 -03
+🖥️  Hostname: meu-servidor
+🐧 Sistema: Ubuntu 24.04 LTS
 
-2. Firewall (UFW):
-  - Ativo. Regras atuais:
-    Status: active
-    ...
+══════════════════════════════════════════════════════════════
 
-3. Serviços em Execução:
-  - Lista de serviços ativos (top 10):
-    ...
+📁 Sistema
+────────────────────────────────────────
+  ✅ OK | Atualizações
+      └─ Sistema atualizado
+
+📁 Firewall
+────────────────────────────────────────
+  ✅ OK | UFW
+      └─ Ativo com 5 regras
 
 ...
 
-=== Fim do Checklist ===
+📊 RESUMO
+  ✅ OK: 12 | ⚠️  Avisos: 2 | ❌ Críticos: 0 | ℹ️  Info: 4
+```
+
+## 📄 Relatório HTML
+
+O relatório HTML gera uma página moderna e responsiva com:
+- Cards de resumo coloridos
+- Tabelas organizadas por categoria
+- Status com cores (OK verde, Warning amarelo, Critical vermelho)
+- Design dark mode profissional
+
+![HTML Report Preview](https://via.placeholder.com/800x400?text=HTML+Report+Preview)
+
+## 📑 Relatório CSV
+
+O relatório CSV pode ser aberto no Excel, Google Sheets ou qualquer ferramenta de análise:
+
+```csv
+Categoria,Item,Status,Descrição,Recomendação,Data,Hostname,Sistema
+"Sistema","Atualizações","OK","Sistema atualizado","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
+"Firewall","UFW","OK","Ativo com 5 regras","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
 ```
 
 ## 🔧 Personalização
