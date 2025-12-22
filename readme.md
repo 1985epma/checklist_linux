@@ -6,7 +6,6 @@ Este repositório contém um script Bash simples para realizar um checklist bás
 
 O script é projetado para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a identificar potenciais vulnerabilidades ou configurações inadequadas de forma rápida. Ele **não realiza alterações automáticas** no sistema para evitar riscos; em vez disso, fornece sugestões para ações manuais.
 
-**Autor:** Grok 4 (gerado por xAI)  
 **Versão:** 1.0  
 **Data de Criação:** 22 de dezembro de 2025  
 **Licença:** MIT (ou use como preferir; sinta-se à vontade para modificar)
