@@ -20,7 +20,9 @@ jobs:
         run: sudo apt-get install -y shellcheck
 
       - name: 🔍 Run ShellCheck
-        run: shellcheck --severity=warning --exclude=SC2155,SC2129,SC2126,SC2001 security_checklist.sh
+        run: |
+          shellcheck --severity=warning --exclude=SC2155,SC2129,SC2126,SC2001 security_checklist.sh
+          shellcheck --severity=warning --exclude=SC2155,SC2129,SC2126,SC2001,SC2034,SC2178,SC2128 service_optimizer.sh
 
       - name: ✅ Check script is executable
         run: |
@@ -41,10 +43,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔧 Make script executable
-        run: chmod +x security_checklist.sh
+        run: |
+          chmod +x security_checklist.sh
+          chmod +x service_optimizer.sh
 
       - name: 📋 Test help option
-        run: ./security_checklist.sh --help
+        run: |
+          ./security_checklist.sh --help
+          ./service_optimizer.sh --help
 
       - name: 🖥️ Test terminal output (dry run)
         run: |
@@ -52,7 +58,14 @@ jobs:
           timeout 60 ./security_checklist.sh || true
         continue-on-error: true
 
-      - name: 📄 Test HTML export
+      - name: � Test service optimizer (list only)
+        run: |
+          ./service_optimizer.sh --list -t desktop
+          ./service_optimizer.sh --list -t server
+          ./service_optimizer.sh --list -t container
+        continue-on-error: true
+
+      - name: �📄 Test HTML export
         run: |
           ./security_checklist.sh -f html -o test_report.html || true
           if [ -f "test_report.html" ]; then

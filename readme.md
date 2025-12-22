@@ -32,6 +32,13 @@ O script foi projetado para ajudar administradores de sistemas, profissionais de
 | 🔐 **Configurações de SSH** | Analisa `PermitRootLogin` e `PasswordAuthentication` |
 | 🦠 **Verificação de Malware** | Usa `rkhunter` se instalado (opcional) |
 
+## � Scripts Disponíveis
+
+| Script | Descrição |
+|--------|-----------|
+| `security_checklist.sh` | Checklist de segurança com relatórios HTML/CSV |
+| `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
+
 ## 📦 Requisitos
 
 - **Sistema Operacional:** Ubuntu Linux (testado em versões LTS: 20.04, 22.04 e 24.04)
@@ -42,7 +49,9 @@ O script foi projetado para ajudar administradores de sistemas, profissionais de
 
 > 💡 Se alguma ferramenta não estiver instalada, o script sugere a instalação automaticamente.
 
-## ⚡ Quick Start - Exportar Relatórios
+---
+
+## ⚡ Security Checklist - Quick Start
 
 ```bash
 # Executar no terminal (padrão)
@@ -147,6 +156,101 @@ Categoria,Item,Status,Descrição,Recomendação,Data,Hostname,Sistema
 "Sistema","Atualizações","OK","Sistema atualizado","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
 "Firewall","UFW","OK","Ativo com 5 regras","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
 ```
+
+---
+
+## 🔧 Service Optimizer - Otimizador de Serviços
+
+Script para desativar serviços desnecessários baseado no tipo de sistema.
+
+### Tipos de Sistema
+
+| Tipo | Descrição |
+|------|-----------|
+| 🖥️ **Desktop** | Remove servidores web, BD, containers se não usar |
+| 🖧 **Servidor** | Remove interface gráfica, som, bluetooth, etc. |
+| 📦 **Container** | Remove systemd, udev, cron, ssh, etc. |
+
+### Modos de Operação
+
+| Modo | Descrição |
+|------|-----------|
+| ⚡ **1 - Automático** | Desativa todos os serviços recomendados automaticamente |
+| 🔧 **2 - Avançado** | Seleciona categorias (BD, Web, Audio, etc.) |
+| 💬 **3 - Interativo** | Pergunta para cada serviço individualmente |
+
+### Exemplos de Uso
+
+```bash
+# Tornar executável
+chmod +x service_optimizer.sh
+
+# Modo interativo (menu)
+sudo ./service_optimizer.sh
+
+# Desktop - Modo automático
+sudo ./service_optimizer.sh -t desktop -m 1
+
+# Servidor - Modo interativo
+sudo ./service_optimizer.sh -t server -m 3
+
+# Container - Modo avançado
+sudo ./service_optimizer.sh -t container -m 2
+
+# Simular sem fazer alterações (dry-run)
+sudo ./service_optimizer.sh -t desktop -m 1 --dry-run
+
+# Apenas listar serviços
+./service_optimizer.sh --list -t server
+```
+
+### Opções Disponíveis
+
+| Opção | Descrição |
+|-------|-----------|
+| `-t, --type` | Tipo: `desktop`, `server`, `container` |
+| `-m, --mode` | Modo: `1` (auto), `2` (avançado), `3` (interativo) |
+| `-d, --dry-run` | Simular sem fazer alterações |
+| `-l, --list` | Listar serviços sem executar |
+| `-h, --help` | Mostrar ajuda |
+
+### Serviços por Categoria
+
+<details>
+<summary>🖥️ Desktop - Serviços removíveis</summary>
+
+- **Servidores:** apache2, nginx, mysql, postgresql, mongodb, redis
+- **Containers:** docker, containerd, lxd, snapd
+- **Impressão:** cups (se não usar impressora)
+- **Bluetooth:** bluetooth (se não usar)
+- **Rede:** avahi-daemon, smbd, nfs-server
+- **Outros:** ModemManager, fwupd, apport
+
+</details>
+
+<details>
+<summary>🖧 Servidor - Serviços removíveis</summary>
+
+- **GUI:** gdm, lightdm, gnome-shell, plasmashell
+- **Áudio:** pulseaudio, pipewire, alsa
+- **Bluetooth:** bluetooth
+- **Desktop:** colord, tracker, geoclue, gvfs
+- **Relatórios:** apport, whoopsie, kerneloops
+
+</details>
+
+<details>
+<summary>📦 Container - Serviços removíveis</summary>
+
+- **Systemd:** journald, udevd, logind, resolved
+- **Hardware:** udev, thermald, irqbalance
+- **Rede:** NetworkManager, wpa_supplicant
+- **Cron:** cron, anacron, atd
+- **SSH:** sshd (use docker exec)
+
+</details>
+
+---
 
 ## 🔧 Personalização
 
