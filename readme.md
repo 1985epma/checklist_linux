@@ -1,22 +1,25 @@
-# 🛡️ Security Checklist para Ubuntu Linux
+# 🛡️ EPMA Security Tools
 
 [![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04%20|%2022.04%20|%2024.04-orange)](https://ubuntu.com/)
 [![Bash](https://img.shields.io/badge/Shell-Bash-green)](https://www.gnu.org/software/bash/)
 
-Script Bash para realizar um checklist básico de segurança em sistemas Ubuntu Linux. Verifica itens essenciais como atualizações, firewall, serviços em execução, contas de usuário, permissões de arquivos e configurações de SSH, gerando um relatório no terminal com recomendações.
+Conjunto de ferramentas de segurança para sistemas Ubuntu Linux. Inclui scripts para checklist de segurança, otimização de serviços e geração de relatórios em HTML/CSV.
 
 ## 📋 Descrição
 
-O script foi projetado para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a identificar potenciais vulnerabilidades ou configurações inadequadas de forma rápida.
+Este projeto oferece ferramentas para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a:
+- Identificar potenciais vulnerabilidades
+- Otimizar serviços do sistema
+- Gerar relatórios de auditoria
 
-> ⚠️ **Importante:** O script **não realiza alterações automáticas** no sistema para evitar riscos. Ele fornece apenas sugestões para ações manuais.
+> ⚠️ **Importante:** Os scripts **não realizam alterações automáticas** no sistema para evitar riscos (exceto o Service Optimizer em modo automático).
 
 | Informação | Detalhe |
 |------------|---------|
 | **Autor** | Everton Araujo |
-| **Versão** | 1.0 |
+| **Versão** | 2.0 |
 | **Data de Criação** | 22 de dezembro de 2025 |
 | **Licença** | MIT |
 
@@ -32,7 +35,7 @@ O script foi projetado para ajudar administradores de sistemas, profissionais de
 | 🔐 **Configurações de SSH** | Analisa `PermitRootLogin` e `PasswordAuthentication` |
 | 🦠 **Verificação de Malware** | Usa `rkhunter` se instalado (opcional) |
 
-## � Scripts Disponíveis
+## 🔧 Ferramentas Disponíveis
 
 | Script | Descrição |
 |--------|-----------|

@@ -1,9 +1,13 @@
 #!/bin/bash
 
-# Script de Checklist de Segurança para Ubuntu Linux
+# ============================================================================
+# EPMA Security Tools - Security Checklist
 # Autor: Everton Araujo
 # Data: 2025-12-22
 # Versão: 2.0
+# 
+# Descrição: Checklist de segurança para Ubuntu Linux com relatórios HTML/CSV
+# ============================================================================
 
 # Cores para output no terminal
 RED='\033[0;31m'

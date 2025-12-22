@@ -1,4 +1,4 @@
-name: CI - Security Checklist
+name: CI - EPMA Security Tools
 
 on:
   push:
@@ -124,19 +124,33 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
           body: |
-            ## 🛡️ Security Checklist v${{ steps.version.outputs.version }}
+            ## 🛡️ EPMA Security Tools v${{ steps.version.outputs.version }}
+            
+            ### Ferramentas incluídas
+            - `security_checklist.sh` - Checklist de segurança
+            - `service_optimizer.sh` - Otimizador de serviços
             
             ### Instalação
             ```bash
-            wget https://github.com/${{ github.repository }}/raw/main/security_checklist.sh
-            chmod +x security_checklist.sh
-            sudo ./security_checklist.sh
+            git clone https://github.com/${{ github.repository }}.git
+            cd checklist_linux
+            chmod +x *.sh
             ```
             
-            ### Formatos de saída
-            - Terminal (padrão)
-            - HTML: `sudo ./security_checklist.sh -f html`
-            - CSV: `sudo ./security_checklist.sh -f csv`
-          files: security_checklist.sh
+            ### Security Checklist
+            ```bash
+            sudo ./security_checklist.sh           # Terminal
+            sudo ./security_checklist.sh -f html   # HTML
+            sudo ./security_checklist.sh -f csv    # CSV
+            ```
+            
+            ### Service Optimizer
+            ```bash
+            sudo ./service_optimizer.sh -t desktop -m 1   # Desktop automático
+            sudo ./service_optimizer.sh -t server -m 3    # Servidor interativo
+            ```
+          files: |
+            security_checklist.sh
+            service_optimizer.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

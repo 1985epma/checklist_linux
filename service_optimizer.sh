@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================================================
-# Script de Otimização de Serviços Linux
+# EPMA Security Tools - Service Optimizer
 # Autor: Everton Araujo
 # Data: 2025-12-21
 # Versão: 1.0
