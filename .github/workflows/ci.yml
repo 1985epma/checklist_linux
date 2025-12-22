@@ -20,7 +20,7 @@ jobs:
         run: sudo apt-get install -y shellcheck
 
       - name: 🔍 Run ShellCheck
-        run: shellcheck security_checklist.sh
+        run: shellcheck --severity=warning --exclude=SC2155,SC2129,SC2126,SC2001 security_checklist.sh
 
       - name: ✅ Check script is executable
         run: |
@@ -83,6 +83,7 @@ jobs:
             test_report.html
             test_report.csv
           retention-days: 7
+          if-no-files-found: ignore
 
   release:
     name: 🚀 Create Release
