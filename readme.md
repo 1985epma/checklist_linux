@@ -1,71 +1,114 @@
-# Script de Checklist de Segurança para Ubuntu Linux
+# 🛡️ Security Checklist para Ubuntu Linux
 
-Este repositório contém um script Bash simples para realizar um checklist básico de segurança em sistemas Ubuntu Linux. O script verifica itens essenciais como atualizações, firewall, serviços em execução, contas de usuário, permissões de arquivos e configurações de SSH, gerando um relatório no terminal com recomendações.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04%20|%2022.04%20|%2024.04-orange)](https://ubuntu.com/)
+[![Bash](https://img.shields.io/badge/Shell-Bash-green)](https://www.gnu.org/software/bash/)
 
-## Descrição
+Script Bash para realizar um checklist básico de segurança em sistemas Ubuntu Linux. Verifica itens essenciais como atualizações, firewall, serviços em execução, contas de usuário, permissões de arquivos e configurações de SSH, gerando um relatório no terminal com recomendações.
 
-O script é projetado para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a identificar potenciais vulnerabilidades ou configurações inadequadas de forma rápida. Ele **não realiza alterações automáticas** no sistema para evitar riscos; em vez disso, fornece sugestões para ações manuais.
+## 📋 Descrição
 
-**Versão:** 1.0  
-**Data de Criação:** 22 de dezembro de 2025  
-**Licença:** MIT (ou use como preferir; sinta-se à vontade para modificar)
+O script foi projetado para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a identificar potenciais vulnerabilidades ou configurações inadequadas de forma rápida.
 
-## Recursos Verificados
+> ⚠️ **Importante:** O script **não realiza alterações automáticas** no sistema para evitar riscos. Ele fornece apenas sugestões para ações manuais.
 
-- **Atualizações do Sistema:** Verifica pacotes atualizáveis via `apt`.
-- **Firewall (UFW):** Checa status e regras.
-- **Serviços em Execução:** Lista serviços ativos e sugere revisão.
-- **Contas de Usuário:** Identifica usuários com shell e contas root-like.
-- **Permissões de Arquivos Críticos:** Verifica arquivos como `/etc/passwd`, `/etc/shadow` e `/etc/ssh/sshd_config`.
-- **Configurações de SSH:** Analisa opções como `PermitRootLogin` e `PasswordAuthentication`.
-- **Verificação de Malware:** Usa `rkhunter` se instalado (opcional).
+| Informação | Detalhe |
+|------------|---------|
+| **Autor** | Everton Araujo |
+| **Versão** | 1.0 |
+| **Data de Criação** | 22 de dezembro de 2025 |
+| **Licença** | MIT |
 
-## Requisitos
+## ✅ Recursos Verificados
 
-- Ubuntu Linux (testado em versões LTS como 20.04, 22.04 e 24.04).
-- Acesso sudo para comandos que requerem privilégios elevados.
-- Ferramentas opcionais: `ufw` (firewall), `rkhunter` (para verificação de rootkits).
+| Verificação | Descrição |
+|-------------|-----------|
+| 🔄 **Atualizações do Sistema** | Verifica pacotes atualizáveis via `apt` |
+| 🔥 **Firewall (UFW)** | Checa status e regras do firewall |
+| ⚙️ **Serviços em Execução** | Lista serviços ativos e sugere revisão |
+| 👤 **Contas de Usuário** | Identifica usuários com shell e contas root-like |
+| 📁 **Permissões de Arquivos** | Verifica `/etc/passwd`, `/etc/shadow` e `/etc/ssh/sshd_config` |
+| 🔐 **Configurações de SSH** | Analisa `PermitRootLogin` e `PasswordAuthentication` |
+| 🦠 **Verificação de Malware** | Usa `rkhunter` se instalado (opcional) |
 
-Se alguma ferramenta não estiver instalada, o script sugere a instalação.
+## 📦 Requisitos
 
-## Instalação e Uso
+- **Sistema Operacional:** Ubuntu Linux (testado em versões LTS: 20.04, 22.04 e 24.04)
+- **Permissões:** Acesso `sudo` para comandos que requerem privilégios elevados
+- **Ferramentas opcionais:**
+  - `ufw` - Firewall
+  - `rkhunter` - Verificação de rootkits
 
-1. **Baixe o Script:**
-   - Clone este repositório ou copie o código para um arquivo chamado `security_checklist.sh
+> 💡 Se alguma ferramenta não estiver instalada, o script sugere a instalação automaticamente.
 
-   chmod +x security_checklist.sh
+## 🚀 Instalação e Uso
 
-3. **Execute o Script:**
-./security_checklist.sh
+### 1. Clone o repositório
 
-   - O script executará as verificações e exibirá um relatório no terminal.
-   - Algumas partes requerem sudo; insira a senha quando solicitado.
+```bash
+git clone https://github.com/seu-usuario/checklist_linux.git
+cd checklist_linux
+```
 
-Exemplo de Saída:
-=== Checklist de Segurança no Ubuntu Linux === Data/Hora: Mon Dec 22 01:16:00 UTC 2025 Hostname: meu-host Versão do Ubuntu: Ubuntu 22.04.1 LTS
+### 2. Torne o script executável
 
-Atualizações do Sistema:
+```bash
+chmod +x security_checklist.sh
+```
 
-Sistema atualizado.
-Firewall (UFW):
+### 3. Execute o script
 
-Ativo. Regras atuais: …
-## Personalizações
+```bash
+sudo ./security_checklist.sh
+```
 
-- **Adicionar Mais Checks:** Edite o script para incluir verificações adicionais, como logs de autenticação (`/var/log/auth.log`) ou pacotes instalados.
-- **Automação:** Integre em cron jobs para execuções periódicas, mas revise as saídas manualmente.
-- **Integrações:** Para ambientes DevOps, combine com ferramentas como Ansible, Terraform ou CI/CD pipelines para automação em nuvem.
+## 📊 Exemplo de Saída
 
-## Avisos
+```
+=== Checklist de Segurança no Ubuntu Linux ===
+Data/Hora: Sáb 21 Dez 2025 10:30:00 -03
+Hostname: meu-servidor
+Versão do Ubuntu: Ubuntu 24.04 LTS
 
-- Este é um checklist **básico**. Para auditorias profissionais, use ferramentas avançadas como Lynis, OpenSCAP ou serviços de segurança em nuvem (ex: AWS Inspector, Azure Security Center).
-- Execute em ambientes de teste primeiro. O script assume um Ubuntu padrão; configurações customizadas podem afetar os resultados.
-- Mantenha seu sistema atualizado e siga as melhores práticas de segurança (ex: princípio do menor privilégio, autenticação de dois fatores).
+1. Atualizações do Sistema:
+  - Sistema atualizado.
 
-## Contribuições
+2. Firewall (UFW):
+  - Ativo. Regras atuais:
+    Status: active
+    ...
 
-Sinta-se à vontade para fork-ar este repositório e enviar pull requests com melhorias! Se você trabalha em DevOps ou segurança, sugestões para integrações com cloud ou IA são bem-vindas.
+3. Serviços em Execução:
+  - Lista de serviços ativos (top 10):
+    ...
 
+...
 
-2. **Torne Executável:**
+=== Fim do Checklist ===
+```
 
+## 🔧 Personalização
+
+Você pode editar o script para adicionar verificações personalizadas conforme sua necessidade:
+
+- Adicionar verificação de portas abertas
+- Incluir análise de logs específicos
+- Verificar configurações de aplicações específicas
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Sinta-se à vontade para:
+
+1. Fazer um fork do projeto
+2. Criar uma branch para sua feature (`git checkout -b feature/nova-verificacao`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova verificação'`)
+4. Push para a branch (`git push origin feature/nova-verificacao`)
+5. Abrir um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+**⭐ Se este projeto foi útil, considere dar uma estrela no repositório!**
