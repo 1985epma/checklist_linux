@@ -1,0 +1,128 @@
+name: CI - Security Checklist
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Permite execução manual
+
+jobs:
+  lint:
+    name: 🔍 Lint & Validate
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐚 Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: 🔍 Run ShellCheck
+        run: shellcheck security_checklist.sh
+
+      - name: ✅ Check script is executable
+        run: |
+          if [[ -x "security_checklist.sh" ]] || head -1 security_checklist.sh | grep -q "^#!/bin/bash"; then
+            echo "✅ Script has proper shebang"
+          else
+            echo "❌ Script missing shebang or not executable"
+            exit 1
+          fi
+
+  test:
+    name: 🧪 Test Script
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Make script executable
+        run: chmod +x security_checklist.sh
+
+      - name: 📋 Test help option
+        run: ./security_checklist.sh --help
+
+      - name: 🖥️ Test terminal output (dry run)
+        run: |
+          # Executar com timeout para evitar travamentos
+          timeout 60 ./security_checklist.sh || true
+        continue-on-error: true
+
+      - name: 📄 Test HTML export
+        run: |
+          ./security_checklist.sh -f html -o test_report.html || true
+          if [ -f "test_report.html" ]; then
+            echo "✅ HTML report generated successfully"
+            head -20 test_report.html
+          else
+            echo "⚠️ HTML report not generated (may require sudo)"
+          fi
+        continue-on-error: true
+
+      - name: 📊 Test CSV export
+        run: |
+          ./security_checklist.sh -f csv -o test_report.csv || true
+          if [ -f "test_report.csv" ]; then
+            echo "✅ CSV report generated successfully"
+            cat test_report.csv
+          else
+            echo "⚠️ CSV report not generated (may require sudo)"
+          fi
+        continue-on-error: true
+
+      - name: 📤 Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            test_report.html
+            test_report.csv
+          retention-days: 7
+
+  release:
+    name: 🚀 Create Release
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]')
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Get version
+        id: version
+        run: |
+          VERSION=$(grep -o 'Versão: [0-9.]*' security_checklist.sh | head -1 | cut -d' ' -f2)
+          if [ -z "$VERSION" ]; then
+            VERSION="1.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📌 Version: $VERSION"
+
+      - name: 📦 Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## 🛡️ Security Checklist v${{ steps.version.outputs.version }}
+            
+            ### Instalação
+            ```bash
+            wget https://github.com/${{ github.repository }}/raw/main/security_checklist.sh
+            chmod +x security_checklist.sh
+            sudo ./security_checklist.sh
+            ```
+            
+            ### Formatos de saída
+            - Terminal (padrão)
+            - HTML: `sudo ./security_checklist.sh -f html`
+            - CSV: `sudo ./security_checklist.sh -f csv`
+          files: security_checklist.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

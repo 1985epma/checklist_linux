@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Checklist Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a2e; color: #eee; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header .info { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 20px; }
+        .header .info span { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .summary-card { padding: 25px; border-radius: 12px; text-align: center; }
+        .summary-card.ok { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .summary-card.warning { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .summary-card.critical { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
+        .summary-card.info { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .summary-card h3 { font-size: 3em; }
+        .summary-card p { font-size: 1.2em; opacity: 0.9; }
+        .category { background: #16213e; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+        .category-header { background: #0f3460; padding: 15px 20px; font-size: 1.3em; font-weight: bold; }
+        .category-header::before { content: '📁 '; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #0f3460; }
+        th { background: #0f3460; font-weight: 600; }
+        tr:hover { background: #1f4068; }
+        .status { padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; }
+        .status.ok { background: #38ef7d; color: #000; }
+        .status.warning { background: #ffc107; color: #000; }
+        .status.critical { background: #f45c43; color: #fff; }
+        .status.info { background: #4facfe; color: #000; }
+        .recommendation { color: #ffc107; font-style: italic; font-size: 0.9em; }
+        .footer { text-align: center; padding: 30px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Checklist Report</h1>
+            <p>Relatório de Segurança do Sistema</p>
+            <div class="info">
+                <span>📅 Sun Dec 21 10:38:40 PM -03 2025</span>
+                <span>🖥️ tuf-epma</span>
+                <span>🐧 Ubuntu 24.04.3 LTS</span>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-card ok"><h3>5</h3><p>✅ OK</p></div>
+            <div class="summary-card warning"><h3>2</h3><p>⚠️ Avisos</p></div>
+            <div class="summary-card critical"><h3>2</h3><p>❌ Críticos</p></div>
+            <div class="summary-card info"><h3>7</h3><p>ℹ️ Info</p></div>
+        </div>
+        <div class="category">
+            <div class="category-header">Sistema</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>Atualizações</strong></td>
+                    <td><span class="status ok">OK</span></td>
+                    <td>Sistema atualizado</td>
+                    <td>-</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Firewall</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>UFW</strong></td>
+                    <td><span class="status critical">CRITICAL</span></td>
+                    <td>Firewall inativo</td>
+                    <td class="recommendation">💡 Ative: sudo ufw enable</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Serviços</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>Serviços Perigosos</strong></td>
+                    <td><span class="status ok">OK</span></td>
+                    <td>Nenhum serviço perigoso ativo</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Ativos</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>41 serviços em execução</td>
+                    <td class="recommendation">💡 Revise periodicamente</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Usuários</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>Com Shell</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>2 usuários: root,everton</td>
+                    <td class="recommendation">💡 Revise contas desnecessárias</td>
+                </tr>
+                <tr>
+                    <td><strong>UID 0 (root)</strong></td>
+                    <td><span class="status ok">OK</span></td>
+                    <td>Apenas root tem UID 0</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>Sem Senha</strong></td>
+                    <td><span class="status critical">CRITICAL</span></td>
+                    <td>Contas sem senha: dhcpcd,messagebus,syslog,uuidd,usbmux,tss,kernoops,whoopsie,dnsmasq,avahi,tcpdump,sssd,speech-dispatcher,cups-pk-helper,saned,geoclue,cups-browsed,hplip,rtkit,colord,gnome-initial-setup,gdm,nm-openvpn,nvidia-persistenced,_flatpak,swtpm,libvirt-qemu,libvirt-dnsmasq,postfix</td>
+                    <td class="recommendation">💡 Defina senhas fortes</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Permissões</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>/etc/passwd</strong></td>
+                    <td><span class="status ok">OK</span></td>
+                    <td>Permissões corretas (644)</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>/etc/shadow</strong></td>
+                    <td><span class="status warning">WARNING</span></td>
+                    <td>Atual: 640 (esperado: 600)</td>
+                    <td class="recommendation">💡 Execute: sudo chmod 600 /etc/shadow</td>
+                </tr>
+                <tr>
+                    <td><strong>/etc/ssh/sshd_config</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>Arquivo não encontrado</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>/etc/gshadow</strong></td>
+                    <td><span class="status warning">WARNING</span></td>
+                    <td>Atual: 640 (esperado: 600)</td>
+                    <td class="recommendation">💡 Execute: sudo chmod 600 /etc/gshadow</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">SSH</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>Instalação</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>SSH não instalado</td>
+                    <td>-</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Malware</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>rkhunter</strong></td>
+                    <td><span class="status ok">OK</span></td>
+                    <td>Nenhum problema detectado</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>ClamAV</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>ClamAV não instalado</td>
+                    <td class="recommendation">💡 Instale: sudo apt install clamav</td>
+                </tr>
+            </table></div>
+        <div class="category">
+            <div class="category-header">Rede</div>
+            <table>
+                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>
+                <tr>
+                    <td><strong>Portas Abertas</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>8 portas em escuta</td>
+                    <td class="recommendation">💡 Revise com: ss -tuln</td>
+                </tr>
+                <tr>
+                    <td><strong>IPv6</strong></td>
+                    <td><span class="status info">INFO</span></td>
+                    <td>IPv6 habilitado</td>
+                    <td class="recommendation">💡 Desabilite se não usar</td>
+                </tr>
+            </table></div>
+        
+        <div class="footer">
+            <p>Relatório gerado por Security Checklist Script v2.0</p>
+            <p>🔒 Mantenha seu sistema seguro!</p>
+        </div>
+    </div>
+</body>
+</html>

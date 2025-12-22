@@ -1,5 +1,6 @@
 # 🛡️ Security Checklist para Ubuntu Linux
 
+[![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04%20|%2022.04%20|%2024.04-orange)](https://ubuntu.com/)
 [![Bash](https://img.shields.io/badge/Shell-Bash-green)](https://www.gnu.org/software/bash/)
@@ -154,6 +155,25 @@ Você pode editar o script para adicionar verificações personalizadas conforme
 - Adicionar verificação de portas abertas
 - Incluir análise de logs específicos
 - Verificar configurações de aplicações específicas
+
+## 🔄 CI/CD
+
+Este projeto utiliza **GitHub Actions** para integração contínua:
+
+| Job | Descrição |
+|-----|-----------|
+| 🔍 **Lint** | Valida o script com ShellCheck |
+| 🧪 **Test** | Testa as opções e exportações |
+| 🚀 **Release** | Cria releases automáticas (com `[release]` no commit) |
+
+### Criar uma Release
+
+Para criar uma nova release automaticamente, inclua `[release]` na mensagem do commit:
+
+```bash
+git commit -m "Nova funcionalidade [release]"
+git push origin main
+```
 
 ## 🤝 Contribuindo
 
