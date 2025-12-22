@@ -31,7 +31,41 @@ Se alguma ferramenta não estiver instalada, o script sugere a instalação.
 ## Instalação e Uso
 
 1. **Baixe o Script:**
-   - Clone este repositório ou copie o código para um arquivo chamado `security_checklist.sh`.
+   - Clone este repositório ou copie o código para um arquivo chamado `security_checklist.sh
+
+   chmod +x security_checklist.sh
+
+3. **Execute o Script:**
+./security_checklist.sh
+
+   - O script executará as verificações e exibirá um relatório no terminal.
+   - Algumas partes requerem sudo; insira a senha quando solicitado.
+
+Exemplo de Saída:
+=== Checklist de Segurança no Ubuntu Linux === Data/Hora: Mon Dec 22 01:16:00 UTC 2025 Hostname: meu-host Versão do Ubuntu: Ubuntu 22.04.1 LTS
+
+Atualizações do Sistema:
+
+Sistema atualizado.
+Firewall (UFW):
+
+Ativo. Regras atuais: …
+## Personalizações
+
+- **Adicionar Mais Checks:** Edite o script para incluir verificações adicionais, como logs de autenticação (`/var/log/auth.log`) ou pacotes instalados.
+- **Automação:** Integre em cron jobs para execuções periódicas, mas revise as saídas manualmente.
+- **Integrações:** Para ambientes DevOps, combine com ferramentas como Ansible, Terraform ou CI/CD pipelines para automação em nuvem.
+
+## Avisos
+
+- Este é um checklist **básico**. Para auditorias profissionais, use ferramentas avançadas como Lynis, OpenSCAP ou serviços de segurança em nuvem (ex: AWS Inspector, Azure Security Center).
+- Execute em ambientes de teste primeiro. O script assume um Ubuntu padrão; configurações customizadas podem afetar os resultados.
+- Mantenha seu sistema atualizado e siga as melhores práticas de segurança (ex: princípio do menor privilégio, autenticação de dois fatores).
+
+## Contribuições
+
+Sinta-se à vontade para fork-ar este repositório e enviar pull requests com melhorias! Se você trabalha em DevOps ou segurança, sugestões para integrações com cloud ou IA são bem-vindas.
+
 
 2. **Torne Executável:**
 
