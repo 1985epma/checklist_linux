@@ -1,6 +1,6 @@
 # 🛡️ CHECK LINUX Security Tools
 
-> Language: English · Leia em Português (Brasil): [readme.md](readme.md)
+> Language: English · Español: [README.es.md](README.es.md) · Leia em Português (Brasil): [readme.md](readme.md)
 
 [![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

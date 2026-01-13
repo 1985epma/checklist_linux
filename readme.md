@@ -1,6 +1,6 @@
 # 🛡️ CHECK LINUX Security Tools
 
-> 🌍 Idioma: PT-BR (padrão) · Read this in English: [README.en.md](README.en.md)
+> 🌍 Idioma: PT-BR (padrão) · English: [README.en.md](README.en.md) · Español: [README.es.md](README.es.md)
 
 [![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
