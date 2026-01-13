@@ -43,6 +43,10 @@ Este projeto oferece ferramentas para ajudar administradores de sistemas, profis
 | `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
 | `sudo_permissions_checker.sh` | Verificação de permissões sudo do sistema |
 | `sudo_corporate_config.sh` | Configurador de sudo corporativo seguro |
+| `i18n_demo.sh` | Demonstração do sistema de internacionalização (i18n) |
+
+
+> 🌍 **Novo:** Sistema de internacionalização disponível! Os scripts suportam múltiplos idiomas (pt_BR, en_US, es_ES). Veja [I18N_README.md](I18N_README.md) para detalhes.
 
 ## 📦 Requisitos
 
