@@ -41,6 +41,8 @@ Este projeto oferece ferramentas para ajudar administradores de sistemas, profis
 |--------|-----------|
 | `security_checklist.sh` | Checklist de segurança com relatórios HTML/CSV |
 | `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
+| `sudo_permissions_checker.sh` | Verificação de permissões sudo do sistema |
+| `sudo_corporate_config.sh` | Configurador de sudo corporativo seguro |
 
 ## 📦 Requisitos
 
@@ -252,6 +254,115 @@ sudo ./service_optimizer.sh -t desktop -m 1 --dry-run
 - **SSH:** sshd (use docker exec)
 
 </details>
+
+---
+
+---
+
+## 🔐 Sudo Permissions Checker - Verificação de Permissões
+
+Script para auditar e verificar as configurações atuais de permissões sudo no sistema.
+
+```bash
+# Executar verificação completa
+sudo ./sudo_permissions_checker.sh
+
+# Verificar usuário específico
+sudo ./sudo_permissions_checker.sh -u username
+
+# Gerar relatório em arquivo
+sudo ./sudo_permissions_checker.sh -o relatorio_sudo.txt
+
+# Modo detalhado
+sudo ./sudo_permissions_checker.sh -v
+```
+
+### Verificações Realizadas
+
+✅ Usuários com acesso sudo
+✅ Grupos sudoers configurados
+✅ Regras sudo sem senha (NOPASSWD)
+✅ Aliases de comando definidos
+✅ Padrões de comando permitidos
+✅ Análise de configurações perigosas
+
+---
+
+## 🏢 Sudo Corporate Config - Configuração Corporativa
+
+Script interativo para criar uma configuração sudo segura e adequada para ambientes corporativos.
+
+```bash
+# Modo interativo
+sudo ./sudo_corporate_config.sh
+
+# Modo automático (Desktop)
+sudo ./sudo_corporate_config.sh -m desktop
+
+# Modo automático (Servidor)
+sudo ./sudo_corporate_config.sh -m server
+
+# Aplicar com backup automático
+sudo ./sudo_corporate_config.sh -m desktop -b
+
+# Visualizar mudanças sem aplicar (dry-run)
+sudo ./sudo_corporate_config.sh -m desktop --dry-run
+```
+
+### Opções Disponíveis
+
+| Opção | Descrição |
+|-------|-----------|
+| `-m, --mode` | `desktop`, `server` ou `custom` |
+| `-u, --user` | Usuário para adicionar aos sudoers |
+| `-b, --backup` | Criar backup automático do sudoers |
+| `--dry-run` | Simular mudanças sem aplicar |
+| `-v, --verbose` | Modo detalhado |
+| `-h, --help` | Mostrar ajuda |
+
+### Modos Disponíveis
+
+#### 🖥️ Desktop Mode
+- ✅ Usuário pode executar apt/snap/flatpak
+- ✅ Pode ler e executar scripts de utilidade
+- ✅ Acesso a comandos de rede (ifconfig, systemctl)
+- ❌ Sem acesso a arquivos do sistema críticos
+- ❌ Nenhum comando é executado sem senha
+- ❌ Sem acesso direto a shell como root
+
+#### 🖧 Server Mode
+- ✅ Controle de gerenciamento de serviços
+- ✅ Permissão para atualizar pacotes
+- ✅ Logs e monitoramento de sistema
+- ✅ Backup e restauração
+- ❌ Sem edição de arquivos críticos
+- ❌ Todas as operações requerem confirmação
+- ❌ Sem acesso a sudo -i (shell root)
+
+#### ⚙️ Custom Mode
+- Permite selecionar permissões específicas
+- Configuração granular por usuário
+- Adicionar múltiplos usuários
+- Definir comandos permitidos customizados
+
+### Estrutura de Configuração
+
+As configurações são criadas em `/etc/sudoers.d/`:
+
+```bash
+/etc/sudoers.d/user_apt_snap      # Permissões para apt/snap/flatpak
+/etc/sudoers.d/user_file_ops      # Leitura e execução de arquivos
+/etc/sudoers.d/user_system_mgmt   # Gerenciamento de sistema
+```
+
+### Segurança
+
+✅ Nenhuma operação é executada como root direto
+✅ Logging de todas as operações sudo
+✅ Requer senha para a maioria dos comandos
+✅ Configurações validadas antes de aplicar
+✅ Backup automático do sudoers original
+✅ Reversão fácil em caso de erro
 
 ---
 
