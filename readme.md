@@ -43,6 +43,7 @@ Este projeto oferece ferramentas para ajudar administradores de sistemas, profis
 |--------|-----------|
 | `security_checklist.sh` | Checklist de segurança com relatórios HTML/CSV |
 | `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
+| `service_optimizer_gui.sh` | 🖥️ Versão GUI do otimizador (Zenity) |
 | `sudo_permissions_checker.sh` | Verificação de permissões sudo do sistema |
 | `sudo_corporate_config.sh` | Configurador de sudo corporativo seguro |
 | `i18n_demo.sh` | Demonstração do sistema de internacionalização (i18n) |

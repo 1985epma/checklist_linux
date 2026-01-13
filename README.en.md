@@ -43,6 +43,7 @@ This project helps sysadmins, DevOps, and security enthusiasts to:
 |--------|-------------|
 | `security_checklist.sh` | Security checklist with HTML/CSV reports |
 | `service_optimizer.sh` | Service optimizer for Desktop/Server/Container |
+| `service_optimizer_gui.sh` | 🖥️ GUI version of optimizer (Zenity) |
 | `sudo_permissions_checker.sh` | System sudo permissions audit |
 | `corporate_sudo_configurator.sh` | Corporate sudo configuration tool |
 | `i18n_demo.sh` | Internationalization (i18n) demo |
