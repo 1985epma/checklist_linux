@@ -1,0 +1,7 @@
+# Este arquivo define quem pode aprovar mudanças no repositório
+# Qualquer mudança em arquivos do repositório requer aprovação de @1985epma
+
+* @1985epma
+
+# Proteção específica para branches críticos
+main @1985epma
