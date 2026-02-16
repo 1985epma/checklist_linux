@@ -49,9 +49,60 @@ Este proyecto ayuda a administradores de sistemas, profesionales de DevOps y ent
 | `i18n_demo.sh` | Demostración del sistema de internacionalización (i18n) |
 
 ## 🌍 Internacionalización (i18n)
-- El README por defecto está en Portugués (Brasil)
+- El README por defecto está en Inglés
 - Los scripts soportan múltiples idiomas (pt_BR, en_US, es_ES)
 - Consulte I18N_README.md para más detalles
+
+## 📦 Métodos de Instalación
+
+### Método 1: Flatpak (Recomendado para Usuarios de Escritorio)
+
+Flatpak proporciona una forma aislada e independiente de la distribución para instalar y ejecutar CHECK LINUX Security Tools.
+
+#### Instalación Rápida
+
+```bash
+# Instalar desde build local
+./build-flatpak.sh
+
+# O construir e instalar en un comando
+flatpak-builder --user --install --force-clean build-dir com.github._1985epma.ChecklistLinux.yml
+```
+
+#### Requisitos
+
+```bash
+# Instalar Flatpak y flatpak-builder
+sudo apt install flatpak flatpak-builder
+
+# Agregar repositorio Flathub
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Instalar runtime
+flatpak install flathub org.freedesktop.Platform//23.08
+flatpak install flathub org.freedesktop.Sdk//23.08
+```
+
+#### Ejecutar el Flatpak
+
+```bash
+# Iniciar desde el menú de aplicaciones o ejecutar:
+flatpak run com.github._1985epma.ChecklistLinux
+
+# Ejecutar herramientas específicas
+flatpak run --command=security-checklist com.github._1985epma.ChecklistLinux
+flatpak run --command=service-optimizer com.github._1985epma.ChecklistLinux
+```
+
+**📘 Para instrucciones detalladas de Flatpak, consulte [FLATPAK_BUILD.md](FLATPAK_BUILD.md)**
+
+---
+
+### Método 2: Ejecución Directa de Scripts
+
+Para servidores o usuarios avanzados que prefieren ejecución directa de scripts.
+
+---
 
 ## ⚡ Inicio Rápido
 

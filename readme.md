@@ -63,6 +63,67 @@ This project helps sysadmins, DevOps, and security enthusiasts to:
 
 ---
 
+## 📦 Installation Methods
+
+### Method 1: Flatpak (Recommended for Desktop Users)
+
+Flatpak provides a sandboxed, distribution-independent way to install and run CHECK LINUX Security Tools.
+
+#### Quick Install
+
+```bash
+# Install from local build
+./build-flatpak.sh
+
+# Or build and install in one command
+flatpak-builder --user --install --force-clean build-dir com.github._1985epma.ChecklistLinux.yml
+```
+
+#### Requirements
+
+```bash
+# Install Flatpak and flatpak-builder
+sudo apt install flatpak flatpak-builder
+
+# Add Flathub repository
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Install runtime
+flatpak install flathub org.freedesktop.Platform//23.08
+flatpak install flathub org.freedesktop.Sdk//23.08
+```
+
+#### Running the Flatpak
+
+```bash
+# Launch from application menu or run:
+flatpak run com.github._1985epma.ChecklistLinux
+
+# Run specific tools
+flatpak run --command=security-checklist com.github._1985epma.ChecklistLinux
+flatpak run --command=service-optimizer com.github._1985epma.ChecklistLinux
+```
+
+#### Distribution
+
+Create a distributable bundle:
+```bash
+./build-flatpak.sh bundle
+# or
+flatpak-builder --repo=repo --force-clean build-dir com.github._1985epma.ChecklistLinux.yml
+flatpak build-bundle repo checklist-linux.flatpak com.github._1985epma.ChecklistLinux
+```
+
+**📘 For detailed Flatpak instructions, see [FLATPAK_BUILD.md](FLATPAK_BUILD.md)**
+
+---
+
+### Method 2: Direct Script Execution
+
+For servers or advanced users who prefer direct script execution:
+
+---
+
 ## ⚡ Security Checklist - Quick Start
 
 ```bash
