@@ -118,9 +118,66 @@ flatpak build-bundle repo checklist-linux.flatpak com.github._1985epma.Checklist
 
 ---
 
-### Método 2: Execução Direta de Scripts
+### Método 2: Container Docker (Recomendado para Servidores)
 
-Para servidores ou usuários avançados que preferem execução direta de scripts:
+Docker oferece ambientes isolados e reproduzíveis perfeitos para auditoria de segurança.
+
+#### Início Rápido
+
+```bash
+# Baixar do GitHub Container Registry
+docker pull ghcr.io/1985epma/checklist-linux:latest
+
+# Executar checklist de segurança
+docker run --rm --privileged \
+  -v $(pwd)/output:/output \
+  -v /etc:/host/etc:ro \
+  -v /var:/host/var:ro \
+  ghcr.io/1985epma/checklist-linux:latest \
+  security-checklist -f html -o /output/security_report.html
+
+# Shell interativo
+docker run -it --rm --privileged \
+  -v $(pwd)/output:/output \
+  ghcr.io/1985epma/checklist-linux:latest \
+  /bin/bash
+```
+
+#### Usando Docker Compose
+
+```bash
+# Clonar repositório
+git clone https://github.com/1985epma/checklist_linux.git
+cd checklist_linux
+
+# Iniciar serviços
+docker-compose up -d
+
+# Executar verificação de segurança
+docker-compose run security-check
+
+# Shell interativo
+docker-compose exec interactive bash
+```
+
+#### Comandos Disponíveis no Container
+
+```bash
+# Todas as ferramentas disponíveis com comandos curtos:
+security-checklist    # Auditoria de segurança
+service-optimizer     # Otimização de serviços
+sudo-checker          # Auditoria de permissões sudo
+sudo-configurator     # Configuração sudo corporativa
+i18n-demo            # Demonstração de internacionalização
+```
+
+**📘 Para instruções detalhadas do Docker, veja [DOCKER.md](DOCKER.md)**
+
+---
+
+### Método 3: Execução Direta de Scripts
+
+Para usuários avançados que preferem execução direta de scripts:
 
 ---
 

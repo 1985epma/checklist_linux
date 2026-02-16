@@ -1,0 +1,46 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# GitHub
+.github
+
+# Build artifacts
+build-dir
+repo
+.flatpak-builder
+*.flatpak
+*.tar.gz
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and reports
+*.log
+*.html
+*.csv
+security_report_*
+
+# Documentation (will be copied explicitly)
+FLATPAK_BUILD.md
+DOCKER.md
+
+# Test and temporary files
+test/
+tmp/
+temp/
+output/

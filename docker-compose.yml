@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  checklist-linux:
+    image: ghcr.io/1985epma/checklist-linux:latest
+    container_name: checklist-linux
+    
+    # Build configuration if building locally
+    build:
+      context: .
+      dockerfile: Dockerfile
+      labels:
+        org.opencontainers.image.title: "CHECK LINUX Security Tools"
+        org.opencontainers.image.description: "Comprehensive security audit and system optimization toolkit"
+        org.opencontainers.image.source: "https://github.com/1985epma/checklist_linux"
+    
+    # Privileged mode needed for system auditing
+    privileged: true
+    
+    # Host network for proper system inspection
+    network_mode: host
+    
+    # Mount volumes
+    volumes:
+      # Output directory for reports
+      - ./output:/output
+      
+      # Host system access (read-only) for auditing
+      - /etc:/host/etc:ro
+      - /var:/host/var:ro
+      - /sys:/host/sys:ro
+      - /proc:/host/proc:ro
+      
+      # Optional: Mount Docker socket for container inspection
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    # Environment variables
+    environment:
+      - LANG=en_US.UTF-8
+      - TZ=America/Sao_Paulo
+    
+    # Keep container running for interactive use
+    stdin_open: true
+    tty: true
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Command (override in docker-compose.override.yml if needed)
+    command: /bin/bash
+
+  # Service for one-time security check
+  security-check:
+    extends: checklist-linux
+    container_name: security-check-once
+    restart: "no"
+    command: security-checklist -f html -o /output/security_report.html
+    
+  # Service for interactive shell
+  interactive:
+    extends: checklist-linux
+    container_name: checklist-linux-shell
+    restart: "no"
+    command: /bin/bash
+
+# Named volumes (optional)
+volumes:
+  output-data:
+    driver: local
+
+# Networks (optional)
+networks:
+  default:
+    name: checklist-network
