@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#2c3e50" stroke="#34495e" stroke-width="2"/>
+  
+  <!-- Shield shape -->
+  <path d="M 64 20 L 90 30 L 90 55 Q 90 80 64 95 Q 38 80 38 55 L 38 30 Z" 
+        fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+  
+  <!-- Check mark -->
+  <path d="M 52 57 L 60 67 L 78 45" 
+        fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Linux penguin silhouette (simplified) -->
+  <g transform="translate(64, 100) scale(0.3)">
+    <ellipse cx="0" cy="0" rx="20" ry="15" fill="#ecf0f1"/>
+    <ellipse cx="-8" cy="-5" rx="3" ry="4" fill="#2c3e50"/>
+    <ellipse cx="8" cy="-5" rx="3" ry="4" fill="#2c3e50"/>
+    <path d="M -5 2 Q 0 5 5 2" fill="none" stroke="#e67e22" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Security lock icon in corner -->
+  <g transform="translate(95, 95)">
+    <rect x="-6" y="-4" width="12" height="8" rx="1" fill="#e74c3c" stroke="#c0392b" stroke-width="1"/>
+    <path d="M -3 -4 L -3 -7 Q -3 -10 0 -10 Q 3 -10 3 -7 L 3 -4" 
+          fill="none" stroke="#c0392b" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="1.5" fill="#c0392b"/>
+  </g>
+  
+  <!-- Terminal prompt indicator -->
+  <g transform="translate(33, 95)">
+    <rect x="-6" y="-4" width="12" height="8" rx="1" fill="#27ae60" stroke="#229954" stroke-width="1"/>
+    <text x="0" y="2" font-family="monospace" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">$</text>
+  </g>
+</svg>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github._1985epma.ChecklistLinux</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  
+  <name>CHECK LINUX Security Tools</name>
+  <summary>Comprehensive security audit and system optimization toolkit for Ubuntu Linux</summary>
+  
+  <description>
+    <p>
+      CHECK LINUX is a comprehensive toolkit designed to help system administrators, 
+      DevOps professionals, and security enthusiasts secure and optimize Ubuntu Linux systems.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Security Checklist: Comprehensive security audit with HTML/CSV reports</li>
+      <li>System Updates verification: Check for available package updates</li>
+      <li>Firewall analysis: UFW status and rules inspection</li>
+      <li>Running Services review: Identify and review active services</li>
+      <li>User Accounts audit: Find users with shell access and root-like accounts</li>
+      <li>File Permissions check: Verify critical system files</li>
+      <li>SSH Configuration analysis: Review SSH security settings</li>
+      <li>Malware scanning: Integration with rkhunter (optional)</li>
+      <li>Service Optimizer: Disable unnecessary services based on system type</li>
+      <li>Sudo Permissions Checker: Audit sudo configurations</li>
+      <li>Corporate Sudo Configurator: Create secure sudo policies</li>
+    </ul>
+    <p>
+      The scripts are designed to be non-invasive and do not make automatic changes 
+      to your system (except Service Optimizer in automatic mode when explicitly requested).
+    </p>
+    <p>
+      Multi-language support available: English, Portuguese (Brazil), and Spanish.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">com.github._1985epma.ChecklistLinux.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Security Checklist Main Interface</caption>
+    </screenshot>
+    <screenshot>
+      <caption>HTML Security Report</caption>
+    </screenshot>
+    <screenshot>
+      <caption>Service Optimizer</caption>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/1985epma/checklist_linux</url>
+  <url type="bugtracker">https://github.com/1985epma/checklist_linux/issues</url>
+  <url type="help">https://github.com/1985epma/checklist_linux/blob/main/readme.md</url>
+  
+  <developer_name>Everton Araujo</developer_name>
+  
+  <provides>
+    <binary>checklist-linux-launcher</binary>
+    <binary>security-checklist</binary>
+    <binary>service-optimizer</binary>
+    <binary>service-optimizer-gui</binary>
+    <binary>sudo-permissions-checker</binary>
+    <binary>corporate-sudo-configurator</binary>
+  </provides>
+  
+  <releases>
+    <release version="2.0" date="2025-12-22">
+      <description>
+        <p>Major release with internationalization support and new features</p>
+        <ul>
+          <li>Added internationalization support (i18n) for pt_BR, en_US, es_ES</li>
+          <li>New Corporate Sudo Configurator tool</li>
+          <li>Improved HTML and CSV report generation</li>
+          <li>Enhanced Service Optimizer with GUI version</li>
+          <li>Better error handling and user feedback</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-cartoon">none</content_attribute>
+    <content_attribute id="violence-fantasy">none</content_attribute>
+    <content_attribute id="violence-realistic">none</content_attribute>
+    <content_attribute id="violence-bloodshed">none</content_attribute>
+    <content_attribute id="violence-sexual">none</content_attribute>
+    <content_attribute id="drugs-alcohol">none</content_attribute>
+    <content_attribute id="drugs-narcotics">none</content_attribute>
+    <content_attribute id="drugs-tobacco">none</content_attribute>
+    <content_attribute id="sex-nudity">none</content_attribute>
+    <content_attribute id="sex-themes">none</content_attribute>
+    <content_attribute id="language-profanity">none</content_attribute>
+    <content_attribute id="language-humor">none</content_attribute>
+    <content_attribute id="language-discrimination">none</content_attribute>
+    <content_attribute id="social-chat">none</content_attribute>
+    <content_attribute id="social-info">none</content_attribute>
+    <content_attribute id="social-audio">none</content_attribute>
+    <content_attribute id="social-location">none</content_attribute>
+    <content_attribute id="social-contacts">none</content_attribute>
+    <content_attribute id="money-purchasing">none</content_attribute>
+    <content_attribute id="money-gambling">none</content_attribute>
+  </content_rating>
+  
+  <keywords>
+    <keyword>security</keyword>
+    <keyword>audit</keyword>
+    <keyword>checklist</keyword>
+    <keyword>firewall</keyword>
+    <keyword>permissions</keyword>
+    <keyword>sudo</keyword>
+    <keyword>optimization</keyword>
+    <keyword>system</keyword>
+    <keyword>ubuntu</keyword>
+    <keyword>linux</keyword>
+  </keywords>
+  
+  <categories>
+    <category>System</category>
+    <category>Security</category>
+    <category>Utility</category>
+  </categories>
+  
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+</component>

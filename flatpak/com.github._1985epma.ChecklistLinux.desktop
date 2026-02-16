@@ -1,0 +1,41 @@
+[Desktop Entry]
+Name=CHECK LINUX Security Tools
+GenericName=System Security Auditor
+Comment=Comprehensive security audit and system optimization toolkit
+Icon=com.github._1985epma.ChecklistLinux
+Exec=checklist-linux-launcher
+Terminal=true
+Type=Application
+Categories=System;Security;Utility;
+Keywords=security;audit;checklist;firewall;permissions;sudo;optimization;
+StartupNotify=true
+
+# Translations
+Name[pt_BR]=CHECK LINUX Ferramentas de Segurança
+GenericName[pt_BR]=Auditor de Segurança do Sistema
+Comment[pt_BR]=Kit de ferramentas completo para auditoria de segurança e otimização do sistema
+
+Name[es]=CHECK LINUX Herramientas de Seguridad
+GenericName[es]=Auditor de Seguridad del Sistema
+Comment[es]=Kit de herramientas completo para auditoría de seguridad y optimización del sistema
+
+# Actions
+Actions=SecurityChecklist;ServiceOptimizer;SudoChecker;
+
+[Desktop Action SecurityChecklist]
+Name=Security Checklist
+Name[pt_BR]=Checklist de Segurança
+Name[es]=Lista de Verificación de Seguridad
+Exec=checklist-linux-launcher --checklist
+
+[Desktop Action ServiceOptimizer]
+Name=Service Optimizer
+Name[pt_BR]=Otimizador de Serviços
+Name[es]=Optimizador de Servicios
+Exec=checklist-linux-launcher --optimizer
+
+[Desktop Action SudoChecker]
+Name=Sudo Permissions Checker
+Name[pt_BR]=Verificador de Permissões Sudo
+Name[es]=Verificador de Permisos Sudo
+Exec=checklist-linux-launcher --sudo-checker
