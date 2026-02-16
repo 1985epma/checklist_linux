@@ -1,262 +1,262 @@
 # 🛡️ CHECK LINUX Security Tools
 
-> 🌍 Idioma: PT-BR (padrão) · English: [README.en.md](README.en.md) · Español: [README.es.md](README.es.md)
+> 🌍 Language: English (default) · Português (Brasil): [README.pt-br.md](README.pt-br.md) · Español: [README.es.md](README.es.md)
 
 [![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04%20|%2022.04%20|%2024.04-orange)](https://ubuntu.com/)
 [![Bash](https://img.shields.io/badge/Shell-Bash-green)](https://www.gnu.org/software/bash/)
 
-Conjunto de ferramentas de segurança para sistemas Ubuntu Linux. Inclui scripts para checklist de segurança, otimização de serviços e geração de relatórios em HTML/CSV.
+Toolkit to help secure Ubuntu Linux systems. Includes scripts for security checklist, service optimization, and HTML/CSV audit reports.
 
-## 📋 Descrição
+## 📋 Overview
 
-Este projeto oferece ferramentas para ajudar administradores de sistemas, profissionais de DevOps e entusiastas de segurança a:
-- Identificar potenciais vulnerabilidades
-- Otimizar serviços do sistema
-- Gerar relatórios de auditoria
+This project helps sysadmins, DevOps, and security enthusiasts to:
+- Identify potential vulnerabilities
+- Optimize system services
+- Generate audit reports
 
-> ⚠️ **Importante:** Os scripts **não realizam alterações automáticas** no sistema para evitar riscos (exceto o Service Optimizer em modo automático).
+> ⚠️ **Important:** Scripts **do not automatically change** your system to avoid risks (except Service Optimizer in auto mode).
 
-| Informação | Detalhe |
-|------------|---------|
-| **Autor** | Everton Araujo |
-| **Versão** | 2.0 |
-| **Data de Criação** | 22 de dezembro de 2025 |
-| **Licença** | MIT |
+| Info | Details |
+|------|---------|
+| **Author** | Everton Araujo |
+| **Version** | 2.0 |
+| **Created** | December 22, 2025 |
+| **License** | MIT |
 
-## ✅ Recursos Verificados
+## ✅ Security Checks
 
-| Verificação | Descrição |
-|-------------|-----------|
-| 🔄 **Atualizações do Sistema** | Verifica pacotes atualizáveis via `apt` |
-| 🔥 **Firewall (UFW)** | Checa status e regras do firewall |
-| ⚙️ **Serviços em Execução** | Lista serviços ativos e sugere revisão |
-| 👤 **Contas de Usuário** | Identifica usuários com shell e contas root-like |
-| 📁 **Permissões de Arquivos** | Verifica `/etc/passwd`, `/etc/shadow` e `/etc/ssh/sshd_config` |
-| 🔐 **Configurações de SSH** | Analisa `PermitRootLogin` e `PasswordAuthentication` |
-| 🦠 **Verificação de Malware** | Usa `rkhunter` se instalado (opcional) |
+| Check | Description |
+|-------|-------------|
+| 🔄 **System Updates** | Check upgradable packages via `apt` |
+| 🔥 **Firewall (UFW)** | Firewall status and rules |
+| ⚙️ **Running Services** | List active services and suggests review |
+| 👤 **User Accounts** | Identifies users with shell and root-like accounts |
+| 📁 **File Permissions** | Check `/etc/passwd`, `/etc/shadow` and `/etc/ssh/sshd_config` |
+| 🔐 **SSH Configuration** | Analyze `PermitRootLogin` and `PasswordAuthentication` |
+| 🦠 **Malware Scan** | Uses `rkhunter` if installed (optional) |
 
-## 🔧 Ferramentas Disponíveis
+## 🔧 Available Tools
 
-| Script | Descrição |
-|--------|-----------|
-| `security_checklist.sh` | Checklist de segurança com relatórios HTML/CSV |
-| `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
-| `service_optimizer_gui.sh` | 🖥️ Versão GUI do otimizador (Zenity) |
-| `sudo_permissions_checker.sh` | Verificação de permissões sudo do sistema |
-| `sudo_corporate_config.sh` | Configurador de sudo corporativo seguro |
-| `i18n_demo.sh` | Demonstração do sistema de internacionalização (i18n) |
+| Script | Description |
+|--------|-------------|
+| `security_checklist.sh` | Security checklist with HTML/CSV reports |
+| `service_optimizer.sh` | Service optimizer for Desktop/Server/Container |
+| `service_optimizer_gui.sh` | 🖥️ GUI version of optimizer (Zenity) |
+| `sudo_permissions_checker.sh` | System sudo permissions audit |
+| `corporate_sudo_configurator.sh` | Corporate sudo configuration tool |
+| `i18n_demo.sh` | Internationalization (i18n) demo |
 
 
-> 🌍 **Novo:** Sistema de internacionalização disponível! Os scripts suportam múltiplos idiomas (pt_BR, en_US, es_ES). Veja [I18N_README.md](I18N_README.md) para detalhes.
+> 🌍 **New:** Internationalization system available! Scripts support multiple languages (pt_BR, en_US, es_ES). See [I18N_README.md](I18N_README.md) for details.
 
-## 📦 Requisitos
+## 📦 Requirements
 
-- **Sistema Operacional:** Ubuntu Linux (testado em versões LTS: 20.04, 22.04 e 24.04)
-- **Permissões:** Acesso `sudo` para comandos que requerem privilégios elevados
-- **Ferramentas opcionais:**
+- **Operating System:** Ubuntu Linux (tested on LTS versions: 20.04, 22.04 and 24.04)
+- **Permissions:** `sudo` access for commands that require elevated privileges
+- **Optional tools:**
   - `ufw` - Firewall
-  - `rkhunter` - Verificação de rootkits
+  - `rkhunter` - Rootkit detection
 
-> 💡 Se alguma ferramenta não estiver instalada, o script sugere a instalação automaticamente.
+> 💡 If any tool is not installed, the script will suggest installation automatically.
 
 ---
 
 ## ⚡ Security Checklist - Quick Start
 
 ```bash
-# Executar no terminal (padrão)
+# Run in terminal (default)
 sudo ./security_checklist.sh
 
-# Exportar para HTML
+# Export to HTML
 sudo ./security_checklist.sh -f html
 
-# Exportar para CSV
+# Export to CSV
 sudo ./security_checklist.sh -f csv
 
-# Exportar com nome personalizado
-sudo ./security_checklist.sh -f html -o relatorio_seguranca.html
-sudo ./security_checklist.sh -f csv -o auditoria.csv
+# Export with custom name
+sudo ./security_checklist.sh -f html -o security_report.html
+sudo ./security_checklist.sh -f csv -o audit.csv
 ```
 
-## 🚀 Instalação e Uso
+## 🚀 Installation and Usage
 
-### 1. Clone o repositório
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/seu-usuario/checklist_linux.git
+git clone https://github.com/your-user/checklist_linux.git
 cd checklist_linux
 ```
 
-### 2. Torne o script executável
+### 2. Make the script executable
 
 ```bash
 chmod +x security_checklist.sh
 ```
 
-### 3. Execute o script
+### 3. Run the script
 
 ```bash
-# Saída no terminal (padrão)
+# Terminal output (default)
 sudo ./security_checklist.sh
 
-# Gerar relatório HTML
+# Generate HTML report
 sudo ./security_checklist.sh -f html
 
-# Gerar relatório CSV
+# Generate CSV report
 sudo ./security_checklist.sh -f csv
 
-# Especificar nome do arquivo de saída
-sudo ./security_checklist.sh -f html -o meu_relatorio.html
+# Specify output file name
+sudo ./security_checklist.sh -f html -o my_report.html
 sudo ./security_checklist.sh --format csv --output security_audit.csv
 ```
 
-### Opções disponíveis
+### Available options
 
-| Opção | Descrição |
-|-------|-----------|
-| `-f, --format` | Formato de saída: `terminal` (padrão), `html`, `csv` |
-| `-o, --output` | Nome do arquivo de saída |
-| `-h, --help` | Mostrar ajuda |
+| Option | Description |
+|--------|-------------|
+| `-f, --format` | Output format: `terminal` (default), `html`, `csv` |
+| `-o, --output` | Output file name |
+| `-h, --help` | Show help |
 
-## 📊 Exemplo de Saída (Terminal)
+## 📊 Sample Output (Terminal)
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║      🛡️  CHECKLIST DE SEGURANÇA - UBUNTU LINUX  🛡️           ║
+║      🛡️  SECURITY CHECKLIST - UBUNTU LINUX  🛡️              ║
 ╚══════════════════════════════════════════════════════════════╝
 
-📅 Data/Hora: Sáb 21 Dez 2025 10:30:00 -03
-🖥️  Hostname: meu-servidor
-🐧 Sistema: Ubuntu 24.04 LTS
+📅 Date/Time: Sat Dec 21 2025 10:30:00 -03
+🖥️  Hostname: my-server
+🐧 System: Ubuntu 24.04 LTS
 
 ══════════════════════════════════════════════════════════════
 
-📁 Sistema
+📁 System
 ────────────────────────────────────────
-  ✅ OK | Atualizações
-      └─ Sistema atualizado
+  ✅ OK | Updates
+      └─ System up to date
 
 📁 Firewall
 ────────────────────────────────────────
   ✅ OK | UFW
-      └─ Ativo com 5 regras
+      └─ Active with 5 rules
 
 ...
 
-📊 RESUMO
-  ✅ OK: 12 | ⚠️  Avisos: 2 | ❌ Críticos: 0 | ℹ️  Info: 4
+📊 SUMMARY
+  ✅ OK: 12 | ⚠️  Warnings: 2 | ❌ Critical: 0 | ℹ️  Info: 4
 ```
 
-## 📄 Relatório HTML
+## 📄 HTML Report
 
-O relatório HTML gera uma página moderna e responsiva com:
-- Cards de resumo coloridos
-- Tabelas organizadas por categoria
-- Status com cores (OK verde, Warning amarelo, Critical vermelho)
-- Design dark mode profissional
+The HTML report generates a modern and responsive page with:
+- Colored summary cards
+- Tables organized by category
+- Status with colors (OK green, Warning yellow, Critical red)
+- Professional dark mode design
 
 ![HTML Report Preview](https://via.placeholder.com/800x400?text=HTML+Report+Preview)
 
-## 📑 Relatório CSV
+## 📑 CSV Report
 
-O relatório CSV pode ser aberto no Excel, Google Sheets ou qualquer ferramenta de análise:
+The CSV report can be opened in Excel, Google Sheets or any analysis tool:
 
 ```csv
-Categoria,Item,Status,Descrição,Recomendação,Data,Hostname,Sistema
-"Sistema","Atualizações","OK","Sistema atualizado","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
-"Firewall","UFW","OK","Ativo com 5 regras","-","Sáb 21 Dez 2025","servidor","Ubuntu 24.04"
+Category,Item,Status,Description,Recommendation,Date,Hostname,System
+"System","Updates","OK","System up to date","-","Sat Dec 21 2025","server","Ubuntu 24.04"
+"Firewall","UFW","OK","Active with 5 rules","-","Sat Dec 21 2025","server","Ubuntu 24.04"
 ```
 
 ---
 
-## 🔧 Service Optimizer - Otimizador de Serviços
+## 🔧 Service Optimizer - Service Optimization Tool
 
-Script para desativar serviços desnecessários baseado no tipo de sistema.
+Script to disable unnecessary services based on system type.
 
-### Tipos de Sistema
+### System Types
 
-| Tipo | Descrição |
-|------|-----------|
-| 🖥️ **Desktop** | Remove servidores web, BD, containers se não usar |
-| 🖧 **Servidor** | Remove interface gráfica, som, bluetooth, etc. |
-| 📦 **Container** | Remove systemd, udev, cron, ssh, etc. |
+| Type | Description |
+|------|-------------|
+| 🖥️ **Desktop** | Removes web servers, DB, containers if not using |
+| 🖧 **Server** | Removes GUI, sound, bluetooth, etc. |
+| 📦 **Container** | Removes systemd, udev, cron, ssh, etc. |
 
-### Modos de Operação
+### Operation Modes
 
-| Modo | Descrição |
-|------|-----------|
-| ⚡ **1 - Automático** | Desativa todos os serviços recomendados automaticamente |
-| 🔧 **2 - Avançado** | Seleciona categorias (BD, Web, Audio, etc.) |
-| 💬 **3 - Interativo** | Pergunta para cada serviço individualmente |
+| Mode | Description |
+|------|-------------|
+| ⚡ **1 - Automatic** | Disables all recommended services automatically |
+| 🔧 **2 - Advanced** | Select categories (DB, Web, Audio, etc.) |
+| 💬 **3 - Interactive** | Asks for each service individually |
 
-### Exemplos de Uso
+### Usage Examples
 
 ```bash
-# Tornar executável
+# Make executable
 chmod +x service_optimizer.sh
 
-# Modo interativo (menu)
+# Interactive mode (menu)
 sudo ./service_optimizer.sh
 
-# Desktop - Modo automático
+# Desktop - Automatic mode
 sudo ./service_optimizer.sh -t desktop -m 1
 
-# Servidor - Modo interativo
+# Server - Interactive mode
 sudo ./service_optimizer.sh -t server -m 3
 
-# Container - Modo avançado
+# Container - Advanced mode
 sudo ./service_optimizer.sh -t container -m 2
 
-# Simular sem fazer alterações (dry-run)
+# Simulate without making changes (dry-run)
 sudo ./service_optimizer.sh -t desktop -m 1 --dry-run
 
-# Apenas listar serviços
+# List services only
 ./service_optimizer.sh --list -t server
 ```
 
-### Opções Disponíveis
+### Available Options
 
-| Opção | Descrição |
-|-------|-----------|
-| `-t, --type` | Tipo: `desktop`, `server`, `container` |
-| `-m, --mode` | Modo: `1` (auto), `2` (avançado), `3` (interativo) |
-| `-d, --dry-run` | Simular sem fazer alterações |
-| `-l, --list` | Listar serviços sem executar |
-| `-h, --help` | Mostrar ajuda |
+| Option | Description |
+|--------|-------------|
+| `-t, --type` | Type: `desktop`, `server`, `container` |
+| `-m, --mode` | Mode: `1` (auto), `2` (advanced), `3` (interactive) |
+| `-d, --dry-run` | Simulate without making changes |
+| `-l, --list` | List services without executing |
+| `-h, --help` | Show help |
 
-### Serviços por Categoria
+### Services by Category
 
 <details>
-<summary>🖥️ Desktop - Serviços removíveis</summary>
+<summary>🖥️ Desktop - Removable services</summary>
 
-- **Servidores:** apache2, nginx, mysql, postgresql, mongodb, redis
+- **Servers:** apache2, nginx, mysql, postgresql, mongodb, redis
 - **Containers:** docker, containerd, lxd, snapd
-- **Impressão:** cups (se não usar impressora)
-- **Bluetooth:** bluetooth (se não usar)
-- **Rede:** avahi-daemon, smbd, nfs-server
-- **Outros:** ModemManager, fwupd, apport
+- **Printing:** cups (if not using printer)
+- **Bluetooth:** bluetooth (if not using)
+- **Network:** avahi-daemon, smbd, nfs-server
+- **Others:** ModemManager, fwupd, apport
 
 </details>
 
 <details>
-<summary>🖧 Servidor - Serviços removíveis</summary>
+<summary>🖧 Server - Removable services</summary>
 
 - **GUI:** gdm, lightdm, gnome-shell, plasmashell
-- **Áudio:** pulseaudio, pipewire, alsa
+- **Audio:** pulseaudio, pipewire, alsa
 - **Bluetooth:** bluetooth
 - **Desktop:** colord, tracker, geoclue, gvfs
-- **Relatórios:** apport, whoopsie, kerneloops
+- **Reports:** apport, whoopsie, kerneloops
 
 </details>
 
 <details>
-<summary>📦 Container - Serviços removíveis</summary>
+<summary>📦 Container - Removable services</summary>
 
 - **Systemd:** journald, udevd, logind, resolved
 - **Hardware:** udev, thermald, irqbalance
-- **Rede:** NetworkManager, wpa_supplicant
+- **Network:** NetworkManager, wpa_supplicant
 - **Cron:** cron, anacron, atd
 - **SSH:** sshd (use docker exec)
 
@@ -264,156 +264,154 @@ sudo ./service_optimizer.sh -t desktop -m 1 --dry-run
 
 ---
 
----
+## 🔐 Sudo Permissions Checker - Permissions Audit
 
-## 🔐 Sudo Permissions Checker - Verificação de Permissões
-
-Script para auditar e verificar as configurações atuais de permissões sudo no sistema.
+Script to audit and verify current sudo permission settings on the system.
 
 ```bash
-# Executar verificação completa
+# Run complete verification
 sudo ./sudo_permissions_checker.sh
 
-# Verificar usuário específico
+# Check specific user
 sudo ./sudo_permissions_checker.sh -u username
 
-# Gerar relatório em arquivo
-sudo ./sudo_permissions_checker.sh -o relatorio_sudo.txt
+# Generate report to file
+sudo ./sudo_permissions_checker.sh -o sudo_report.txt
 
-# Modo detalhado
+# Verbose mode
 sudo ./sudo_permissions_checker.sh -v
 ```
 
-### Verificações Realizadas
+### Checks Performed
 
-✅ Usuários com acesso sudo
-✅ Grupos sudoers configurados
-✅ Regras sudo sem senha (NOPASSWD)
-✅ Aliases de comando definidos
-✅ Padrões de comando permitidos
-✅ Análise de configurações perigosas
+✅ Users with sudo access
+✅ Configured sudoers groups
+✅ Passwordless sudo rules (NOPASSWD)
+✅ Defined command aliases
+✅ Allowed command patterns
+✅ Analysis of dangerous configurations
 
 ---
 
-## 🏢 Sudo Corporate Config - Configuração Corporativa
+## 🏢 Sudo Corporate Config - Corporate Configuration
 
-Script interativo para criar uma configuração sudo segura e adequada para ambientes corporativos.
+Interactive script to create a secure sudo configuration suitable for corporate environments.
 
 ```bash
-# Modo interativo
-sudo ./sudo_corporate_config.sh
+# Interactive mode
+sudo ./corporate_sudo_configurator.sh
 
-# Modo automático (Desktop)
-sudo ./sudo_corporate_config.sh -m desktop
+# Automatic mode (Desktop)
+sudo ./corporate_sudo_configurator.sh -m desktop
 
-# Modo automático (Servidor)
-sudo ./sudo_corporate_config.sh -m server
+# Automatic mode (Server)
+sudo ./corporate_sudo_configurator.sh -m server
 
-# Aplicar com backup automático
-sudo ./sudo_corporate_config.sh -m desktop -b
+# Apply with automatic backup
+sudo ./corporate_sudo_configurator.sh -m desktop -b
 
-# Visualizar mudanças sem aplicar (dry-run)
-sudo ./sudo_corporate_config.sh -m desktop --dry-run
+# View changes without applying (dry-run)
+sudo ./corporate_sudo_configurator.sh -m desktop --dry-run
 ```
 
-### Opções Disponíveis
+### Available Options
 
-| Opção | Descrição |
-|-------|-----------|
-| `-m, --mode` | `desktop`, `server` ou `custom` |
-| `-u, --user` | Usuário para adicionar aos sudoers |
-| `-b, --backup` | Criar backup automático do sudoers |
-| `--dry-run` | Simular mudanças sem aplicar |
-| `-v, --verbose` | Modo detalhado |
-| `-h, --help` | Mostrar ajuda |
+| Option | Description |
+|--------|-------------|
+| `-m, --mode` | `desktop`, `server` or `custom` |
+| `-u, --user` | User to add to sudoers |
+| `-b, --backup` | Create automatic backup of sudoers |
+| `--dry-run` | Simulate changes without applying |
+| `-v, --verbose` | Verbose mode |
+| `-h, --help` | Show help |
 
-### Modos Disponíveis
+### Available Modes
 
 #### 🖥️ Desktop Mode
-- ✅ Usuário pode executar apt/snap/flatpak
-- ✅ Pode ler e executar scripts de utilidade
-- ✅ Acesso a comandos de rede (ifconfig, systemctl)
-- ❌ Sem acesso a arquivos do sistema críticos
-- ❌ Nenhum comando é executado sem senha
-- ❌ Sem acesso direto a shell como root
+- ✅ User can run apt/snap/flatpak
+- ✅ Can read and execute utility scripts
+- ✅ Access to network commands (ifconfig, systemctl)
+- ❌ No access to critical system files
+- ❌ No command runs without password
+- ❌ No direct shell access as root
 
 #### 🖧 Server Mode
-- ✅ Controle de gerenciamento de serviços
-- ✅ Permissão para atualizar pacotes
-- ✅ Logs e monitoramento de sistema
-- ✅ Backup e restauração
-- ❌ Sem edição de arquivos críticos
-- ❌ Todas as operações requerem confirmação
-- ❌ Sem acesso a sudo -i (shell root)
+- ✅ Service management control
+- ✅ Permission to update packages
+- ✅ System logs and monitoring
+- ✅ Backup and restoration
+- ❌ No editing of critical files
+- ❌ All operations require confirmation
+- ❌ No access to sudo -i (root shell)
 
 #### ⚙️ Custom Mode
-- Permite selecionar permissões específicas
-- Configuração granular por usuário
-- Adicionar múltiplos usuários
-- Definir comandos permitidos customizados
+- Allows selecting specific permissions
+- Granular configuration per user
+- Add multiple users
+- Define custom allowed commands
 
-### Estrutura de Configuração
+### Configuration Structure
 
-As configurações são criadas em `/etc/sudoers.d/`:
+Configurations are created in `/etc/sudoers.d/`:
 
 ```bash
-/etc/sudoers.d/user_apt_snap      # Permissões para apt/snap/flatpak
-/etc/sudoers.d/user_file_ops      # Leitura e execução de arquivos
-/etc/sudoers.d/user_system_mgmt   # Gerenciamento de sistema
+/etc/sudoers.d/user_apt_snap      # Permissions for apt/snap/flatpak
+/etc/sudoers.d/user_file_ops      # File reading and execution
+/etc/sudoers.d/user_system_mgmt   # System management
 ```
 
-### Segurança
+### Security
 
-✅ Nenhuma operação é executada como root direto
-✅ Logging de todas as operações sudo
-✅ Requer senha para a maioria dos comandos
-✅ Configurações validadas antes de aplicar
-✅ Backup automático do sudoers original
-✅ Reversão fácil em caso de erro
+✅ No operations executed as direct root
+✅ Logging of all sudo operations
+✅ Requires password for most commands
+✅ Configurations validated before applying
+✅ Automatic backup of original sudoers
+✅ Easy rollback in case of error
 
 ---
 
-## 🔧 Personalização
+## 🔧 Customization
 
-Você pode editar o script para adicionar verificações personalizadas conforme sua necessidade:
+You can edit the script to add custom checks according to your needs:
 
-- Adicionar verificação de portas abertas
-- Incluir análise de logs específicos
-- Verificar configurações de aplicações específicas
+- Add open port verification
+- Include specific log analysis
+- Check specific application configurations
 
 ## 🔄 CI/CD
 
-Este projeto utiliza **GitHub Actions** para integração contínua:
+This project uses **GitHub Actions** for continuous integration:
 
-| Job | Descrição |
-|-----|-----------|
-| 🔍 **Lint** | Valida o script com ShellCheck |
-| 🧪 **Test** | Testa as opções e exportações |
-| 🚀 **Release** | Cria releases automáticas (com `[release]` no commit) |
+| Job | Description |
+|-----|-------------|
+| 🔍 **Lint** | Validates script with ShellCheck |
+| 🧪 **Test** | Tests options and exports |
+| 🚀 **Release** | Creates automatic releases (with `[release]` in commit) |
 
-### Criar uma Release
+### Creating a Release
 
-Para criar uma nova release automaticamente, inclua `[release]` na mensagem do commit:
+To create a new release automatically, include `[release]` in the commit message:
 
 ```bash
-git commit -m "Nova funcionalidade [release]"
+git commit -m "New feature [release]"
 git push origin main
 ```
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
+Contributions are welcome! Feel free to:
 
-1. Fazer um fork do projeto
-2. Criar uma branch para sua feature (`git checkout -b feature/nova-verificacao`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova verificação'`)
-4. Push para a branch (`git push origin feature/nova-verificacao`)
-5. Abrir um Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/new-check`)
+3. Commit your changes (`git commit -m 'Add new check'`)
+4. Push to the branch (`git push origin feature/new-check`)
+5. Open a Pull Request
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+This project is under the MIT license. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
-**⭐ Se este projeto foi útil, considere dar uma estrela no repositório!**
+**⭐ If this project was useful, consider giving it a star on the repository!**

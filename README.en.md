@@ -1,6 +1,6 @@
 # 🛡️ CHECK LINUX Security Tools
 
-> Language: English · Español: [README.es.md](README.es.md) · Leia em Português (Brasil): [readme.md](readme.md)
+> Language: English · Español: [README.es.md](README.es.md) · Leia em Português (Brasil): [README.pt-br.md](README.pt-br.md)
 
 [![CI](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml/badge.svg)](https://github.com/1985epma/checklist_linux/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -49,7 +49,7 @@ This project helps sysadmins, DevOps, and security enthusiasts to:
 | `i18n_demo.sh` | Internationalization (i18n) demo |
 
 ## 🌍 Internationalization (i18n)
-- Default README language is Portuguese (Brazil)
+- Default README language is English
 - Scripts support multiple languages (pt_BR, en_US, es_ES)
 - See I18N_README.md for details
 
