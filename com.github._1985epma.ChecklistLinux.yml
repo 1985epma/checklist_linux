@@ -1,0 +1,68 @@
+app-id: com.github._1985epma.ChecklistLinux
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: checklist-linux-launcher
+
+finish-args:
+  # Filesystem access - needed to read system configurations
+  - --filesystem=host:ro
+  - --filesystem=/etc:ro
+  - --filesystem=/var:ro
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  
+  # Network access (for updates check)
+  - --share=network
+  
+  # Display access for GUI version
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  
+  # System information access
+  - --device=all
+  - --system-talk-name=org.freedesktop.systemd1
+  
+  # Allow running as privileged (for security audits)
+  - --talk-name=org.freedesktop.PolicyKit1
+  
+  # Session bus access
+  - --socket=session-bus
+  - --socket=system-bus
+
+modules:
+  - name: checklist-linux
+    buildsystem: simple
+    build-commands:
+      # Install scripts
+      - install -Dm755 security_checklist.sh ${FLATPAK_DEST}/bin/security-checklist
+      - install -Dm755 service_optimizer.sh ${FLATPAK_DEST}/bin/service-optimizer
+      - install -Dm755 service_optimizer_gui.sh ${FLATPAK_DEST}/bin/service-optimizer-gui
+      - install -Dm755 sudo_permissions_checker.sh ${FLATPAK_DEST}/bin/sudo-permissions-checker
+      - install -Dm755 corporate_sudo_configurator.sh ${FLATPAK_DEST}/bin/corporate-sudo-configurator
+      - install -Dm755 i18n_demo.sh ${FLATPAK_DEST}/bin/i18n-demo
+      
+      # Install i18n files
+      - mkdir -p ${FLATPAK_DEST}/share/checklist-linux/i18n
+      - cp -r i18n/* ${FLATPAK_DEST}/share/checklist-linux/i18n/
+      
+      # Install launcher script
+      - install -Dm755 flatpak/checklist-linux-launcher ${FLATPAK_DEST}/bin/checklist-linux-launcher
+      
+      # Install desktop file
+      - install -Dm644 flatpak/com.github._1985epma.ChecklistLinux.desktop ${FLATPAK_DEST}/share/applications/com.github._1985epma.ChecklistLinux.desktop
+      
+      # Install icon
+      - install -Dm644 flatpak/com.github._1985epma.ChecklistLinux.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/com.github._1985epma.ChecklistLinux.svg
+      
+      # Install AppData
+      - install -Dm644 flatpak/com.github._1985epma.ChecklistLinux.appdata.xml ${FLATPAK_DEST}/share/metainfo/com.github._1985epma.ChecklistLinux.appdata.xml
+      
+      # Install documentation
+      - mkdir -p ${FLATPAK_DEST}/share/doc/checklist-linux
+      - cp readme.md README.*.md I18N_README.md BRANCH_PROTECTION.md ${FLATPAK_DEST}/share/doc/checklist-linux/ || true
+    
+    sources:
+      - type: dir
+        path: .

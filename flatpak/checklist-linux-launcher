@@ -1,0 +1,247 @@
+#!/bin/bash
+# CHECK LINUX Security Tools - Flatpak Launcher
+# Main entry point for the Flatpak application
+
+VERSION="2.0"
+INSTALL_PREFIX="${FLATPAK_DEST:-/app}"
+I18N_DIR="${INSTALL_PREFIX}/share/checklist-linux/i18n"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Banner
+print_banner() {
+    clear
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║${NC}   🛡️  ${GREEN}CHECK LINUX Security Tools${NC} - v${VERSION}            ${CYAN}║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+}
+
+# Main Menu
+show_menu() {
+    print_banner
+    echo -e "${YELLOW}Select a tool to run:${NC}"
+    echo ""
+    echo -e "  ${GREEN}1)${NC} 🔍 Security Checklist"
+    echo -e "       Comprehensive security audit with HTML/CSV reports"
+    echo ""
+    echo -e "  ${GREEN}2)${NC} ⚙️  Service Optimizer (CLI)"
+    echo -e "       Optimize system services based on usage"
+    echo ""
+    echo -e "  ${GREEN}3)${NC} 🖥️  Service Optimizer (GUI)"
+    echo -e "       Graphical interface for service optimization"
+    echo ""
+    echo -e "  ${GREEN}4)${NC} 🔐 Sudo Permissions Checker"
+    echo -e "       Audit sudo permissions on the system"
+    echo ""
+    echo -e "  ${GREEN}5)${NC} 🏢 Corporate Sudo Configurator"
+    echo -e "       Configure corporate sudo policies"
+    echo ""
+    echo -e "  ${GREEN}6)${NC} 🌍 i18n Demo"
+    echo -e "       Internationalization demonstration"
+    echo ""
+    echo -e "  ${GREEN}7)${NC} 📖 Documentation"
+    echo -e "       View project documentation"
+    echo ""
+    echo -e "  ${RED}0)${NC} Exit"
+    echo ""
+    echo -ne "${CYAN}Enter your choice [0-7]: ${NC}"
+}
+
+# Check for sudo/pkexec
+check_privileges() {
+    local tool_name="$1"
+    
+    if [ "$EUID" -ne 0 ]; then
+        echo -e "${YELLOW}⚠️  This tool requires elevated privileges.${NC}"
+        echo ""
+        
+        # Try to use pkexec if available
+        if command -v pkexec &> /dev/null; then
+            echo "Requesting authorization..."
+            return 0
+        else
+            echo -e "${RED}Error: pkexec not found. Please run with appropriate privileges.${NC}"
+            read -p "Press Enter to continue..."
+            return 1
+        fi
+    fi
+    return 0
+}
+
+# Run Security Checklist
+run_security_checklist() {
+    print_banner
+    echo -e "${GREEN}🔍 Security Checklist${NC}"
+    echo ""
+    echo "Choose output format:"
+    echo "  1) Terminal output (default)"
+    echo "  2) HTML report"
+    echo "  3) CSV report"
+    echo ""
+    read -p "Enter choice [1-3]: " format_choice
+    
+    case $format_choice in
+        2)
+            read -p "Output filename (default: security_report.html): " filename
+            filename=${filename:-security_report.html}
+            pkexec "${INSTALL_PREFIX}/bin/security-checklist" -f html -o "$filename"
+            ;;
+        3)
+            read -p "Output filename (default: security_report.csv): " filename
+            filename=${filename:-security_report.csv}
+            pkexec "${INSTALL_PREFIX}/bin/security-checklist" -f csv -o "$filename"
+            ;;
+        *)
+            pkexec "${INSTALL_PREFIX}/bin/security-checklist"
+            ;;
+    esac
+    
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Run Service Optimizer CLI
+run_service_optimizer() {
+    print_banner
+    echo -e "${GREEN}⚙️  Service Optimizer${NC}"
+    echo ""
+    pkexec "${INSTALL_PREFIX}/bin/service-optimizer"
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Run Service Optimizer GUI
+run_service_optimizer_gui() {
+    print_banner
+    echo -e "${GREEN}🖥️  Service Optimizer GUI${NC}"
+    echo ""
+    
+    if ! command -v zenity &> /dev/null; then
+        echo -e "${RED}Error: zenity is required for GUI mode.${NC}"
+        echo "Please install zenity and try again."
+        read -p "Press Enter to continue..."
+        return
+    fi
+    
+    pkexec "${INSTALL_PREFIX}/bin/service-optimizer-gui"
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Run Sudo Permissions Checker
+run_sudo_checker() {
+    print_banner
+    echo -e "${GREEN}🔐 Sudo Permissions Checker${NC}"
+    echo ""
+    pkexec "${INSTALL_PREFIX}/bin/sudo-permissions-checker"
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Run Corporate Sudo Configurator
+run_corporate_sudo() {
+    print_banner
+    echo -e "${GREEN}🏢 Corporate Sudo Configurator${NC}"
+    echo ""
+    pkexec "${INSTALL_PREFIX}/bin/corporate-sudo-configurator"
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Run i18n Demo
+run_i18n_demo() {
+    print_banner
+    echo -e "${GREEN}🌍 Internationalization Demo${NC}"
+    echo ""
+    "${INSTALL_PREFIX}/bin/i18n-demo"
+    echo ""
+    read -p "Press Enter to continue..."
+}
+
+# Show Documentation
+show_documentation() {
+    print_banner
+    echo -e "${GREEN}📖 Documentation${NC}"
+    echo ""
+    
+    DOC_DIR="${INSTALL_PREFIX}/share/doc/checklist-linux"
+    
+    if [ -f "${DOC_DIR}/readme.md" ]; then
+        if command -v less &> /dev/null; then
+            less "${DOC_DIR}/readme.md"
+        else
+            cat "${DOC_DIR}/readme.md"
+            echo ""
+            read -p "Press Enter to continue..."
+        fi
+    else
+        echo -e "${RED}Documentation not found.${NC}"
+        echo "Visit: https://github.com/1985epma/checklist_linux"
+        echo ""
+        read -p "Press Enter to continue..."
+    fi
+}
+
+# Main Loop
+main() {
+    while true; do
+        show_menu
+        read choice
+        
+        case $choice in
+            0)
+                echo -e "${GREEN}Goodbye!${NC}"
+                exit 0
+                ;;
+            1)
+                run_security_checklist
+                ;;
+            2)
+                run_service_optimizer
+                ;;
+            3)
+                run_service_optimizer_gui
+                ;;
+            4)
+                run_sudo_checker
+                ;;
+            5)
+                run_corporate_sudo
+                ;;
+            6)
+                run_i18n_demo
+                ;;
+            7)
+                show_documentation
+                ;;
+            *)
+                echo -e "${RED}Invalid option. Please try again.${NC}"
+                sleep 2
+                ;;
+        esac
+    done
+}
+
+# Check if running from terminal
+if [ -t 0 ]; then
+    main
+else
+    # If not in terminal, launch terminal with this script
+    if command -v gnome-terminal &> /dev/null; then
+        gnome-terminal -- bash -c "cd /app/bin && ./checklist-linux-launcher; exec bash"
+    elif command -v konsole &> /dev/null; then
+        konsole -e bash -c "cd /app/bin && ./checklist-linux-launcher; exec bash"
+    elif command -v xterm &> /dev/null; then
+        xterm -e bash -c "cd /app/bin && ./checklist-linux-launcher; exec bash"
+    else
+        echo "Please run from a terminal"
+        exit 1
+    fi
+fi
