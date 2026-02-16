@@ -2,16 +2,16 @@
 
 ################################################################################
 # CORPORATE SUDO CONFIGURATOR
-# Script para configurar sudo adequado para ambiente corporativo
-# Sem privilégios root, com controle granular de permissões
-# Autor: Everton Araujo
-# Versão: 1.0
-# Data: 2026-01-13
+# Script to configure sudo appropriate for corporate environment
+# Without root privileges, with granular permission control
+# Author: Everton Araujo
+# Version: 1.0
+# Date: 2026-01-13
 ################################################################################
 
 set -euo pipefail
 
-# Cores para saída
+# Output colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -19,13 +19,13 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Variáveis
+# Variables
 SUDOERS_DIR="/etc/sudoers.d"
 BACKUP_DIR="/root/sudo_backups"
 CURRENT_USER="${SUDO_USER:-$(whoami)}"
 
 ################################################################################
-# Funções de Utilitário
+# Utility Functions
 ################################################################################
 
 print_header() {
@@ -56,7 +56,7 @@ print_info() {
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        print_error "Este script deve ser executado com sudo"
+        print_error "This script must be run with sudo"
         exit 1
     fi
 }
@@ -69,69 +69,69 @@ create_backup() {
     if [[ -f /etc/sudoers ]]; then
         cp /etc/sudoers "${backup_file}"
         chmod 600 "${backup_file}"
-        print_success "Backup criado: ${backup_file}"
+        print_success "Backup created: ${backup_file}"
     fi
 }
 
 validate_sudoers() {
     if ! sudo -l -f "$1" > /dev/null 2>&1; then
-        print_warning "Validação de sudoers falhou para: $1"
+        print_warning "Sudoers validation failed for: $1"
         return 1
     fi
     return 0
 }
 
 ################################################################################
-# Menu Principal
+# Main Menu
 ################################################################################
 
 show_main_menu() {
     clear
     print_header "🏢 CORPORATE SUDO CONFIGURATOR v1.0"
     echo ""
-    echo "Configurar permissões de sudo para ambiente corporativo"
+    echo "Configure sudo permissions for corporate environment"
     echo ""
-    echo "  ${CYAN}1${NC}) Configurar Sudo para Leitura/Execução de Arquivos"
-    echo "  ${CYAN}2${NC}) Configurar Sudo para Gerenciador de Pacotes (apt/snap/flatpak)"
-    echo "  ${CYAN}3${NC}) Configurar Sudo Completo (sem privilégios root)"
-    echo "  ${CYAN}4${NC}) Configurar Sudoers por Usuário Personalizado"
-    echo "  ${CYAN}5${NC}) Visualizar Configurações Atuais"
-    echo "  ${CYAN}6${NC}) Restaurar Backup"
-    echo "  ${CYAN}7${NC}) Sair"
+    echo "  ${CYAN}1${NC}) Configure Sudo for File Reading/Execution"
+    echo "  ${CYAN}2${NC}) Configure Sudo for Package Managers (apt/snap/flatpak)"
+    echo "  ${CYAN}3${NC}) Configure Complete Sudo (without root privileges)"
+    echo "  ${CYAN}4${NC}) Configure Custom Sudoers per User"
+    echo "  ${CYAN}5${NC}) View Current Configurations"
+    echo "  ${CYAN}6${NC}) Restore Backup"
+    echo "  ${CYAN}7${NC}) Exit"
     echo ""
-    read -p "Selecione uma opção [1-7]: " choice
+    read -p "Select an option [1-7]: " choice
 }
 
 ################################################################################
-# Opção 1: Arquivo Reader
+# Option 1: File Reader
 ################################################################################
 
 setup_file_reader() {
-    print_header "📁 Configurar Sudo para Leitura/Execução de Arquivos"
+    print_header "📁 Configure Sudo for File Reading/Execution"
     echo ""
     
-    read -p "Qual usuário deseja configurar? [${CURRENT_USER}]: " user
+    read -p "Which user do you want to configure? [${CURRENT_USER}]: " user
     user=${user:-$CURRENT_USER}
     
     if ! id "$user" &>/dev/null; then
-        print_error "Usuário $user não existe"
+        print_error "User $user does not exist"
         return 1
     fi
     
-    read -p "Quais diretórios para leitura? (separe com espaço) [/home /opt /srv]: " dirs
+    read -p "Which directories for reading? (separate with space) [/home /opt /srv]: " dirs
     dirs=${dirs:-"/home /opt /srv"}
     
-    print_section "Configurando permissões de leitura para: $user"
-    print_info "Diretórios: $dirs"
+    print_section "Configuring read permissions for: $user"
+    print_info "Directories: $dirs"
     
     local config_file="${SUDOERS_DIR}/corporate_${user}_files"
     
     cat > "${config_file}" << EOF
-# Configuração de sudo para leitura/execução de arquivos
-# Usuário: $user
-# Data: $(date)
+# Sudo configuration for file reading/execution
+# User: $user
+# Date: $(date)
 
-# Leitura e execução de scripts
+# Script reading and execution
 $user ALL=(ALL) NOPASSWD: /usr/bin/cat /home/*
 $user ALL=(ALL) NOPASSWD: /usr/bin/tail /home/*
 $user ALL=(ALL) NOPASSWD: /usr/bin/find /home -type f
@@ -139,12 +139,12 @@ $user ALL=(ALL) NOPASSWD: /usr/bin/grep -r * /home/*
 $user ALL=(ALL) NOPASSWD: /bin/bash /home/*/scripts/*
 $user ALL=(ALL) NOPASSWD: /bin/sh /home/*/scripts/*
 
-# Permissão para listar diretórios
+# Permission to list directories
 $user ALL=(ALL) NOPASSWD: /bin/ls /home
 $user ALL=(ALL) NOPASSWD: /bin/ls /opt
 $user ALL=(ALL) NOPASSWD: /bin/ls /srv
 
-# Verificação de permissões
+# Permission verification
 $user ALL=(ALL) NOPASSWD: /bin/stat /home/*
 $user ALL=(ALL) NOPASSWD: /usr/bin/file /home/*
 EOF
@@ -152,46 +152,46 @@ EOF
     chmod 440 "${config_file}"
     
     if validate_sudoers "${config_file}"; then
-        print_success "Configuração de leitura/execução criada!"
-        print_info "Arquivo: ${config_file}"
+        print_success "Read/execution configuration created!"
+        print_info "File: ${config_file}"
     else
-        print_error "Falha na validação da configuração"
+        print_error "Configuration validation failed"
         rm "${config_file}"
         return 1
     fi
 }
 
 ################################################################################
-# Opção 2: Gerenciador de Pacotes
+# Option 2: Package Manager
 ################################################################################
 
 setup_package_manager() {
-    print_header "📦 Configurar Sudo para Gerenciador de Pacotes"
+    print_header "📦 Configure Sudo for Package Manager"
     echo ""
     
-    read -p "Qual usuário deseja configurar? [${CURRENT_USER}]: " user
+    read -p "Which user do you want to configure? [${CURRENT_USER}]: " user
     user=${user:-$CURRENT_USER}
     
     if ! id "$user" &>/dev/null; then
-        print_error "Usuário $user não existe"
+        print_error "User $user does not exist"
         return 1
     fi
     
-    echo "Quais gerenciadores permitir?"
+    echo "Which managers to allow?"
     echo "  ${CYAN}1${NC}) APT (Debian/Ubuntu)"
     echo "  ${CYAN}2${NC}) Snap"
     echo "  ${CYAN}3${NC}) Flatpak"
-    echo "  ${CYAN}4${NC}) Todos"
-    read -p "Escolha [1-4]: " pkg_choice
+    echo "  ${CYAN}4${NC}) All"
+    read -p "Choose [1-4]: " pkg_choice
     
     local config_file="${SUDOERS_DIR}/corporate_${user}_packages"
     
     cat > "${config_file}" << EOF
-# Configuração de sudo para gerenciador de pacotes
-# Usuário: $user
-# Data: $(date)
+# Sudo configuration for package manager
+# User: $user
+# Date: $(date)
 
-# Atividades permitidas sem password
+# Activities allowed without password
 Defaults:$user !requiretty
 Defaults:$user log_output
 
@@ -200,7 +200,7 @@ EOF
     case $pkg_choice in
         1|4)
             cat >> "${config_file}" << 'EOF'
-# Permissões para APT
+# APT Permissions
 $user ALL=(ALL) NOPASSWD: /usr/bin/apt update
 $user ALL=(ALL) NOPASSWD: /usr/bin/apt upgrade
 $user ALL=(ALL) NOPASSWD: /usr/bin/apt install
@@ -216,7 +216,7 @@ EOF
     case $pkg_choice in
         2|4)
             cat >> "${config_file}" << 'EOF'
-# Permissões para Snap
+# Snap Permissions
 $user ALL=(ALL) NOPASSWD: /usr/bin/snap install
 $user ALL=(ALL) NOPASSWD: /usr/bin/snap remove
 $user ALL=(ALL) NOPASSWD: /usr/bin/snap update
@@ -229,7 +229,7 @@ EOF
     case $pkg_choice in
         3|4)
             cat >> "${config_file}" << 'EOF'
-# Permissões para Flatpak
+# Flatpak Permissions
 $user ALL=(ALL) NOPASSWD: /usr/bin/flatpak install
 $user ALL=(ALL) NOPASSWD: /usr/bin/flatpak remove
 $user ALL=(ALL) NOPASSWD: /usr/bin/flatpak update
@@ -242,57 +242,57 @@ EOF
     chmod 440 "${config_file}"
     
     if validate_sudoers "${config_file}"; then
-        print_success "Configuração de pacotes criada!"
-        print_info "Arquivo: ${config_file}"
+        print_success "Package configuration created!"
+        print_info "File: ${config_file}"
     else
-        print_error "Falha na validação"
+        print_error "Validation failed"
         rm "${config_file}"
         return 1
     fi
 }
 
 ################################################################################
-# Opção 3: Sudo Completo (Sem Root)
+# Option 3: Complete Sudo (Without Root)
 ################################################################################
 
 setup_complete_sudo() {
-    print_header "🚀 Configurar Sudo Completo (Sem privilégios root)"
+    print_header "🚀 Configure Complete Sudo (Without root privileges)"
     echo ""
-    print_warning "Esta configuração é poderosa. Use com cuidado!"
+    print_warning "This configuration is powerful. Use with caution!"
     echo ""
     
-    read -p "Qual usuário deseja configurar? [${CURRENT_USER}]: " user
+    read -p "Which user do you want to configure? [${CURRENT_USER}]: " user
     user=${user:-$CURRENT_USER}
     
     if ! id "$user" &>/dev/null; then
-        print_error "Usuário $user não existe"
+        print_error "User $user does not exist"
         return 1
     fi
     
-    read -p "Permitir executar TODOS os comandos sem password? [s/N]: " confirm
-    if [[ ! "$confirm" =~ ^[sS]$ ]]; then
-        print_info "Operação cancelada"
+    read -p "Allow executing ALL commands without password? [y/N]: " confirm
+    if [[ ! "$confirm" =~ ^[yY]$ ]]; then
+        print_info "Operation cancelled"
         return 0
     fi
     
     local config_file="${SUDOERS_DIR}/corporate_${user}_complete"
     
     cat > "${config_file}" << EOF
-# Configuração completa de sudo para $user
-# AVISO: Este usuário tem acesso praticamente ilimitado
-# Data: $(date)
+# Complete sudo configuration for $user
+# WARNING: This user has virtually unlimited access
+# Date: $(date)
 
-# Não requer tty para comandos sudo
+# Does not require tty for sudo commands
 Defaults:$user !requiretty
 
-# Logging de todos os comandos executados
+# Logging of all executed commands
 Defaults:$user log_output
 Defaults:$user log_input
 
-# Executa todos os comandos sem pedir password
+# Execute all commands without asking password
 $user ALL=(ALL) NOPASSWD: ALL
 
-# Exceção: Comandos críticos que SEMPRE pedem confirmação
+# Exception: Critical commands that ALWAYS require confirmation
 # $user ALL=(ALL) PASSWD: /usr/bin/passwd
 # $user ALL=(ALL) PASSWD: /sbin/shutdown
 # $user ALL=(ALL) PASSWD: /sbin/reboot
@@ -301,50 +301,50 @@ EOF
     chmod 440 "${config_file}"
     
     if validate_sudoers "${config_file}"; then
-        print_success "Configuração completa criada!"
-        print_warning "Lembre-se: Este usuário pode executar qualquer comando!"
-        print_info "Arquivo: ${config_file}"
+        print_success "Complete configuration created!"
+        print_warning "Remember: This user can execute any command!"
+        print_info "File: ${config_file}"
     else
-        print_error "Falha na validação"
+        print_error "Validation failed"
         rm "${config_file}"
         return 1
     fi
 }
 
 ################################################################################
-# Opção 4: Configuração Personalizada
+# Option 4: Custom Configuration
 ################################################################################
 
 setup_custom() {
-    print_header "⚙️ Configurar Sudoers Personalizado"
+    print_header "⚙️ Configure Custom Sudoers"
     echo ""
     
-    read -p "Qual usuário deseja configurar? [${CURRENT_USER}]: " user
+    read -p "Which user do you want to configure? [${CURRENT_USER}]: " user
     user=${user:-$CURRENT_USER}
     
     if ! id "$user" &>/dev/null; then
-        print_error "Usuário $user não existe"
+        print_error "User $user does not exist"
         return 1
     fi
     
-    read -p "Nome da configuração: " config_name
+    read -p "Configuration name: " config_name
     config_name=${config_name//[^a-zA-Z0-9_]/}
     
     local config_file="${SUDOERS_DIR}/corporate_${user}_${config_name}"
     
-    print_section "Edite a configuração (salve e saia para confirmar):"
-    print_info "Use o editor para adicionar regras. Exemplo:"
+    print_section "Edit the configuration (save and exit to confirm):"
+    print_info "Use the editor to add rules. Example:"
     echo "    $user ALL=(ALL) NOPASSWD: /usr/bin/docker"
     echo "    $user ALL=(ALL) NOPASSWD: /usr/bin/systemctl"
     echo ""
     
-    # Template inicial
+    # Initial template
     cat > "${config_file}" << EOF
-# Configuração personalizada para $user
-# Data: $(date)
-# Edite as linhas abaixo com os comandos desejados
+# Custom configuration for $user
+# Date: $(date)
+# Edit the lines below with the desired commands
 
-# Exemplo:
+# Example:
 # $user ALL=(ALL) NOPASSWD: /usr/bin/docker
 # $user ALL=(ALL) NOPASSWD: /usr/bin/systemctl
 # $user ALL=(ALL) PASSWD: /usr/bin/passwd
@@ -354,25 +354,25 @@ EOF
     ${EDITOR:-nano} "${config_file}"
     
     if validate_sudoers "${config_file}"; then
-        print_success "Configuração personalizada criada!"
-        print_info "Arquivo: ${config_file}"
+        print_success "Custom configuration created!"
+        print_info "File: ${config_file}"
     else
-        print_error "Falha na validação"
+        print_error "Validation failed"
         rm "${config_file}"
         return 1
     fi
 }
 
 ################################################################################
-# Opção 5: Visualizar Configurações
+# Option 5: View Configurations
 ################################################################################
 
 view_configurations() {
-    print_header "📋 Configurações Atuais de Sudo"
+    print_header "📋 Current Sudo Configurations"
     echo ""
     
     if [[ ! -d "${SUDOERS_DIR}" ]]; then
-        print_warning "Diretório ${SUDOERS_DIR} não encontrado"
+        print_warning "Directory ${SUDOERS_DIR} not found"
         return 1
     fi
     
@@ -381,32 +381,32 @@ view_configurations() {
         if [[ -f "$config" ]]; then
             count=$((count + 1))
             echo ""
-            print_section "Arquivo: $(basename $config)"
+            print_section "File: $(basename $config)"
             echo "────────────────────────────────────"
             head -20 "$config"
             if [[ $(wc -l < "$config") -gt 20 ]]; then
-                echo "... (mais linhas)"
+                echo "... (more lines)"
             fi
         fi
     done
     
     if [[ $count -eq 0 ]]; then
-        print_warning "Nenhuma configuração corporativa encontrada"
+        print_warning "No corporate configurations found"
     else
-        print_success "Total de configurações: $count"
+        print_success "Total configurations: $count"
     fi
 }
 
 ################################################################################
-# Opção 6: Restaurar Backup
+# Option 6: Restore Backup
 ################################################################################
 
 restore_backup() {
-    print_header "🔄 Restaurar Backup"
+    print_header "🔄 Restore Backup"
     echo ""
     
     if [[ ! -d "${BACKUP_DIR}" ]]; then
-        print_warning "Nenhum backup disponível"
+        print_warning "No backups available"
         return 0
     fi
     
@@ -419,14 +419,14 @@ restore_backup() {
     done
     
     if [[ $count -eq 0 ]]; then
-        print_warning "Nenhum backup disponível"
+        print_warning "No backups available"
         return 0
     fi
     
-    read -p "Selecione o backup para restaurar [1-$count]: " choice
+    read -p "Select backup to restore [1-$count]: " choice
     
     if [[ ! "$choice" =~ ^[0-9]+$ ]] || [[ $choice -lt 1 ]] || [[ $choice -gt $count ]]; then
-        print_error "Opção inválida"
+        print_error "Invalid option"
         return 1
     fi
     
@@ -434,7 +434,7 @@ restore_backup() {
     
     if [[ -f "$backup_file" ]]; then
         cp "$backup_file" /etc/sudoers
-        print_success "Backup restaurado: $(basename $backup_file)"
+        print_success "Backup restored: $(basename $backup_file)"
     fi
 }
 
@@ -457,18 +457,18 @@ main() {
             5) view_configurations ;;
             6) restore_backup ;;
             7) 
-                print_success "Encerrando..."
+                print_success "Exiting..."
                 exit 0
                 ;;
             *)
-                print_error "Opção inválida"
+                print_error "Invalid option"
                 ;;
         esac
         
         echo ""
-        read -p "Pressione ENTER para continuar..."
+        read -p "Press ENTER to continue..."
     done
 }
 
-# Executar main
+# Execute main
 main "$@"

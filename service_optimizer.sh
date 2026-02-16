@@ -2,11 +2,11 @@
 
 # ============================================================================
 # EPMA Security Tools - Service Optimizer
-# Autor: Everton Araujo
-# Data: 2025-12-21
-# Versão: 1.0
+# Author: Everton Araujo
+# Date: 2025-12-21
+# Version: 1.0
 # 
-# Descrição: Remove/desativa serviços desnecessários baseado no tipo de sistema
+# Description: Remove/disable unnecessary services based on system type
 # ============================================================================
 
 # Cores
@@ -19,70 +19,70 @@ MAGENTA='\033[0;35m'
 NC='\033[0m'
 BOLD='\033[1m'
 
-# Variáveis globais
+# Global variables
 MODE=""
 SYSTEM_TYPE=""
 DRY_RUN=false
 LOG_FILE="service_optimizer_$(date +%Y%m%d_%H%M%S).log"
 
 # ============================================================================
-# DEFINIÇÃO DE SERVIÇOS POR CATEGORIA
+# SERVICE DEFINITION BY CATEGORY
 # ============================================================================
 
-# Serviços desnecessários em DESKTOP
+# Unnecessary services on DESKTOP
 DESKTOP_UNNECESSARY=(
-    # Servidores
-    "apache2:Servidor web Apache"
-    "nginx:Servidor web Nginx"
-    "mysql:Banco de dados MySQL"
-    "mariadb:Banco de dados MariaDB"
-    "postgresql:Banco de dados PostgreSQL"
-    "mongodb:Banco de dados MongoDB"
-    "redis-server:Cache Redis"
-    "memcached:Cache Memcached"
-    "docker:Container Docker (se não usar)"
-    "containerd:Runtime de containers"
+    # Servers
+    "apache2:Apache web server"
+    "nginx:Nginx web server"
+    "mysql:MySQL database"
+    "mariadb:MariaDB database"
+    "postgresql:PostgreSQL database"
+    "mongodb:MongoDB database"
+    "redis-server:Redis cache"
+    "memcached:Memcached cache"
+    "docker:Docker container (if not using)"
+    "containerd:Container runtime"
     
-    # Serviços de rede/servidor
-    "sshd:Servidor SSH (se não precisar acesso remoto)"
-    "vsftpd:Servidor FTP"
-    "proftpd:Servidor FTP"
-    "smbd:Samba (compartilhamento Windows)"
+    # Network/server services
+    "sshd:SSH server (if remote access not needed)"
+    "vsftpd:FTP server"
+    "proftpd:FTP server"
+    "smbd:Samba (Windows sharing)"
     "nmbd:Samba NetBIOS"
-    "nfs-server:Servidor NFS"
-    "rpcbind:RPC para NFS"
-    "bind9:Servidor DNS"
-    "named:Servidor DNS BIND"
-    "postfix:Servidor de email"
-    "dovecot:Servidor IMAP/POP3"
-    "exim4:Servidor de email"
+    "nfs-server:NFS server"
+    "rpcbind:RPC for NFS"
+    "bind9:DNS server"
+    "named:BIND DNS server"
+    "postfix:Email server"
+    "dovecot:IMAP/POP3 server"
+    "exim4:Email server"
     
-    # Serviços de impressão (se não usar impressora)
-    "cups:Sistema de impressão CUPS"
-    "cups-browsed:Descoberta de impressoras"
+    # Printing services (if not using printer)
+    "cups:CUPS printing system"
+    "cups-browsed:Printer discovery"
     
-    # Bluetooth (se não usar)
-    "bluetooth:Serviço Bluetooth"
-    "blueman-mechanism:Gerenciador Bluetooth"
+    # Bluetooth (if not using)
+    "bluetooth:Bluetooth service"
+    "blueman-mechanism:Blueman Bluetooth manager"
     
-    # Outros
-    "avahi-daemon:Descoberta de rede mDNS"
-    "ModemManager:Gerenciador de modem 3G/4G"
-    "wpa_supplicant:WiFi (em desktop com cabo)"
-    "thermald:Controle térmico Intel (em AMD)"
-    "irqbalance:Balanceamento de IRQ (desktop simples)"
-    "lxd:Containers LXD"
-    "snapd:Snap packages (se preferir apt)"
-    "fwupd:Atualização de firmware"
+    # Others
+    "avahi-daemon:mDNS network discovery"
+    "ModemManager:3G/4G modem manager"
+    "wpa_supplicant:WiFi (on wired desktop)"
+    "thermald:Intel thermal control (on AMD)"
+    "irqbalance:IRQ balancing (simple desktop)"
+    "lxd:LXD containers"
+    "snapd:Snap packages (if preferring apt)"
+    "fwupd:Firmware update"
     "packagekit:PackageKit"
-    "unattended-upgrades:Atualizações automáticas"
-    "apport:Relatório de crashes"
-    "whoopsie:Relatório de erros Ubuntu"
+    "unattended-upgrades:Automatic updates"
+    "apport:Crash reports"
+    "whoopsie:Ubuntu error reports"
 )
 
-# Serviços desnecessários em SERVIDOR
+# Unnecessary services on SERVER
 SERVER_UNNECESSARY=(
-    # Interface gráfica
+    # Graphical interface
     "gdm:GNOME Display Manager"
     "gdm3:GNOME Display Manager 3"
     "lightdm:LightDM Display Manager"
@@ -94,90 +94,90 @@ SERVER_UNNECESSARY=(
     "plasmashell:KDE Plasma"
     "xfce4:XFCE Desktop"
     
-    # Som e multimídia
-    "pulseaudio:Servidor de áudio PulseAudio"
-    "pipewire:Servidor de áudio PipeWire"
+    # Sound and multimedia
+    "pulseaudio:PulseAudio audio server"
+    "pipewire:PipeWire audio server"
     "pipewire-pulse:PipeWire PulseAudio"
-    "alsa-state:Estado do ALSA"
-    "alsa-restore:Restauração ALSA"
+    "alsa-state:ALSA state"
+    "alsa-restore:ALSA restore"
     
     # Bluetooth
-    "bluetooth:Serviço Bluetooth"
-    "blueman-mechanism:Gerenciador Bluetooth"
+    "bluetooth:Bluetooth service"
+    "blueman-mechanism:Blueman Bluetooth manager"
     
-    # Impressão (geralmente)
-    "cups:Sistema de impressão CUPS"
-    "cups-browsed:Descoberta de impressoras"
+    # Printing (usually)
+    "cups:CUPS printing system"
+    "cups-browsed:Printer discovery"
     
-    # Rede desktop
-    "avahi-daemon:Descoberta de rede mDNS"
-    "ModemManager:Gerenciador de modem"
-    "NetworkManager:Gerenciador de rede (se usar netplan)"
+    # Desktop network
+    "avahi-daemon:mDNS network discovery"
+    "ModemManager:Modem manager"
+    "NetworkManager:Network manager (if using netplan)"
     
-    # Outros desktop
-    "colord:Gerenciamento de cores"
-    "accounts-daemon:Contas de usuário GUI"
-    "whoopsie:Relatório de erros"
-    "apport:Relatório de crashes"
-    "kerneloops:Relatório de kernel oops"
-    "speech-dispatcher:Síntese de voz"
-    "brltty:Suporte a Braille"
-    "udisks2:Montagem automática de discos"
-    "gvfs:Sistema de arquivos virtual GNOME"
-    "tracker:Indexador de arquivos"
-    "tracker-miner-fs:Minerador de arquivos"
-    "evolution-data-server:Dados do Evolution"
-    "gnome-keyring:Chaveiro GNOME"
-    "geoclue:Serviço de geolocalização"
-    "switcheroo-control:Controle de GPU híbrida"
-    "bolt:Gerenciador Thunderbolt"
-    "fwupd:Atualização de firmware"
+    # Other desktop
+    "colord:Color management"
+    "accounts-daemon:GUI user accounts"
+    "whoopsie:Error reports"
+    "apport:Crash reports"
+    "kerneloops:Kernel oops reports"
+    "speech-dispatcher:Speech synthesis"
+    "brltty:Braille support"
+    "udisks2:Automatic disk mounting"
+    "gvfs:GNOME virtual file system"
+    "tracker:File indexer"
+    "tracker-miner-fs:File miner"
+    "evolution-data-server:Evolution data"
+    "gnome-keyring:GNOME keyring"
+    "geoclue:Geolocation service"
+    "switcheroo-control:Hybrid GPU control"
+    "bolt:Thunderbolt manager"
+    "fwupd:Firmware update"
     "packagekit:PackageKit"
 )
 
-# Serviços desnecessários em CONTAINER
+# Unnecessary services on CONTAINER
 CONTAINER_UNNECESSARY=(
-    # Init systems (containers usam PID 1 diferente)
-    "systemd-journald:Journal do systemd"
-    "systemd-udevd:Gerenciador de dispositivos"
-    "systemd-logind:Login do systemd"
-    "systemd-resolved:Resolvedor DNS systemd"
-    "systemd-networkd:Rede do systemd"
-    "systemd-timesyncd:Sincronização de tempo"
+    # Init systems (containers use different PID 1)
+    "systemd-journald:Systemd journal"
+    "systemd-udevd:Device manager"
+    "systemd-logind:Systemd login"
+    "systemd-resolved:Systemd DNS resolver"
+    "systemd-networkd:Systemd network"
+    "systemd-timesyncd:Time synchronization"
     
     # Kernel/Hardware
-    "udev:Gerenciador de dispositivos"
-    "dbus:Message bus (geralmente)"
+    "udev:Device manager"
+    "dbus:Message bus (usually)"
     "polkit:PolicyKit"
-    "udisks2:Montagem de discos"
-    "thermald:Controle térmico"
-    "irqbalance:Balanceamento de IRQ"
-    "lvm2-monitor:Monitor LVM"
+    "udisks2:Disk mounting"
+    "thermald:Thermal control"
+    "irqbalance:IRQ balancing"
+    "lvm2-monitor:LVM monitor"
     "multipathd:Multipath"
-    "mdadm:RAID software"
+    "mdadm:Software RAID"
     
-    # Rede (gerenciada pelo host)
-    "NetworkManager:Gerenciador de rede"
-    "networking:Rede SysV"
+    # Network (managed by host)
+    "NetworkManager:Network manager"
+    "networking:SysV network"
     "wpa_supplicant:WiFi"
-    "ModemManager:Gerenciador de modem"
+    "ModemManager:Modem manager"
     "avahi-daemon:mDNS"
     "bluetooth:Bluetooth"
     
-    # Cron (use jobs do orquestrador)
-    "cron:Agendador de tarefas"
+    # Cron (use orchestrator jobs)
+    "cron:Task scheduler"
     "anacron:Anacron"
     "atd:At daemon"
     
-    # Logs (use log driver do container)
+    # Logs (use container log driver)
     "rsyslog:Syslog"
     "syslog-ng:Syslog NG"
     
-    # SSH (acesse via docker exec)
-    "ssh:Servidor SSH"
-    "sshd:Servidor SSH daemon"
+    # SSH (access via docker exec)
+    "ssh:SSH server"
+    "sshd:SSH daemon"
     
-    # Outros
+    # Others
     "snapd:Snap packages"
     "lxd:LXD"
     "fwupd:Firmware"
@@ -185,12 +185,12 @@ CONTAINER_UNNECESSARY=(
     "apport:Crash reports"
     "whoopsie:Error reports"
     "unattended-upgrades:Auto updates"
-    "cups:Impressão"
+    "cups:Printing"
     "postfix:Email"
 )
 
 # ============================================================================
-# FUNÇÕES AUXILIARES
+# HELPER FUNCTIONS
 # ============================================================================
 
 log() {
@@ -202,8 +202,8 @@ print_banner() {
     clear
     echo -e "${CYAN}"
     echo "╔═══════════════════════════════════════════════════════════════════╗"
-    echo "║        🔧 OTIMIZADOR DE SERVIÇOS LINUX 🔧                         ║"
-    echo "║          Remova serviços desnecessários                           ║"
+    echo "║        🔧 LINUX SERVICE OPTIMIZER 🔧                              ║"
+    echo "║          Remove unnecessary services                              ║"
     echo "╚═══════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
     echo -e "📅 $(date)"
@@ -213,32 +213,32 @@ print_banner() {
 
 show_help() {
     print_banner
-    echo -e "${BOLD}USO:${NC}"
-    echo "  $0 [OPÇÕES]"
+    echo -e "${BOLD}USAGE:${NC}"
+    echo "  $0 [OPTIONS]"
     echo ""
-    echo -e "${BOLD}OPÇÕES:${NC}"
-    echo "  -t, --type TYPE      Tipo de sistema: desktop, server, container"
-    echo "  -m, --mode MODE      Modo de operação: 1 (auto), 2 (avançado), 3 (interativo)"
-    echo "  -d, --dry-run        Simular sem fazer alterações"
-    echo "  -l, --list           Listar serviços sem executar"
-    echo "  -h, --help           Mostrar esta ajuda"
+    echo -e "${BOLD}OPTIONS:${NC}"
+    echo "  -t, --type TYPE      System type: desktop, server, container"
+    echo "  -m, --mode MODE      Operation mode: 1 (auto), 2 (advanced), 3 (interactive)"
+    echo "  -d, --dry-run        Simulate without making changes"
+    echo "  -l, --list           List services without executing"
+    echo "  -h, --help           Show this help"
     echo ""
-    echo -e "${BOLD}MODOS:${NC}"
-    echo -e "  ${GREEN}1 - Automático${NC}     Desativa todos os serviços recomendados automaticamente"
-    echo -e "  ${YELLOW}2 - Avançado${NC}       Permite selecionar categorias de serviços"
-    echo -e "  ${CYAN}3 - Interativo${NC}     Pergunta para cada serviço individualmente"
+    echo -e "${BOLD}MODES:${NC}"
+    echo -e "  ${GREEN}1 - Automatic${NC}     Disables all recommended services automatically"
+    echo -e "  ${YELLOW}2 - Advanced${NC}       Allows selecting service categories"
+    echo -e "  ${CYAN}3 - Interactive${NC}     Asks for each service individually"
     echo ""
-    echo -e "${BOLD}EXEMPLOS:${NC}"
-    echo "  $0 -t desktop -m 1              # Auto-otimizar desktop"
-    echo "  $0 -t server -m 3               # Interativo para servidor"
-    echo "  $0 -t container -m 1 --dry-run  # Simular em container"
-    echo "  $0 --list -t desktop            # Listar serviços de desktop"
+    echo -e "${BOLD}EXAMPLES:${NC}"
+    echo "  $0 -t desktop -m 1              # Auto-optimize desktop"
+    echo "  $0 -t server -m 3               # Interactive for server"
+    echo "  $0 -t container -m 1 --dry-run  # Simulate in container"
+    echo "  $0 --list -t desktop            # List desktop services"
     echo ""
 }
 
 check_root() {
     if [ "$EUID" -ne 0 ] && [ "$DRY_RUN" = false ]; then
-        echo -e "${RED}❌ Este script precisa ser executado como root!${NC}"
+        echo -e "${RED}❌ This script needs to be run as root!${NC}"
         echo -e "   Use: sudo $0"
         exit 1
     fi
@@ -262,7 +262,7 @@ disable_service() {
     local description="$2"
     
     if [ "$DRY_RUN" = true ]; then
-        echo -e "  ${YELLOW}[DRY-RUN]${NC} Desativaria: $service"
+        echo -e "  ${YELLOW}[DRY-RUN]${NC} Would disable: $service"
         log "[DRY-RUN] Would disable: $service"
         return 0
     fi
@@ -271,11 +271,11 @@ disable_service() {
     status=$(get_service_status "$service")
     
     if [ "$status" = "not-found" ]; then
-        echo -e "  ${BLUE}⊘${NC} $service - não instalado"
+        echo -e "  ${BLUE}⊝${NC} $service - not installed"
         return 0
     fi
     
-    echo -e "  ${YELLOW}⏳${NC} Desativando $service..."
+    echo -e "  ${YELLOW}⏳${NC} Disabling $service..."
     
     if systemctl stop "$service" 2>/dev/null; then
         log "Stopped: $service"
@@ -283,10 +283,10 @@ disable_service() {
     
     if systemctl disable "$service" 2>/dev/null; then
         log "Disabled: $service"
-        echo -e "  ${GREEN}✓${NC} $service desativado com sucesso"
+        echo -e "  ${GREEN}✓${NC} $service disabled successfully"
         return 0
     else
-        echo -e "  ${RED}✗${NC} Falha ao desativar $service"
+        echo -e "  ${RED}✗${NC} Failed to disable $service"
         log "Failed to disable: $service"
         return 1
     fi
@@ -296,7 +296,7 @@ mask_service() {
     local service="$1"
     
     if [ "$DRY_RUN" = true ]; then
-        echo -e "  ${YELLOW}[DRY-RUN]${NC} Mascararia: $service"
+        echo -e "  ${YELLOW}[DRY-RUN]${NC} Would mask: $service"
         return 0
     fi
     
@@ -305,16 +305,16 @@ mask_service() {
 }
 
 # ============================================================================
-# FUNÇÕES DE LISTAGEM
+# LISTING FUNCTIONS
 # ============================================================================
 
 list_services() {
     local -n services=$1
     local type_name="$2"
     
-    echo -e "\n${BOLD}${MAGENTA}═══ Serviços desnecessários para $type_name ═══${NC}\n"
+    echo -e "\n${BOLD}${MAGENTA}═══ Unnecessary services for $type_name ═══${NC}\n"
     
-    printf "%-25s %-10s %s\n" "SERVIÇO" "STATUS" "DESCRIÇÃO"
+    printf "%-25s %-10s %s\n" "SERVICE" "STATUS" "DESCRIPTION"
     echo "─────────────────────────────────────────────────────────────────────"
     
     local running=0
@@ -329,15 +329,15 @@ list_services() {
         
         case $status in
             "running")
-                printf "${RED}%-25s${NC} ${RED}%-10s${NC} %s\n" "$service" "ATIVO" "$description"
+                printf "${RED}%-25s${NC} ${RED}%-10s${NC} %s\n" "$service" "ACTIVE" "$description"
                 ((running++))
                 ;;
             "enabled")
-                printf "${YELLOW}%-25s${NC} ${YELLOW}%-10s${NC} %s\n" "$service" "HABILITADO" "$description"
+                printf "${YELLOW}%-25s${NC} ${YELLOW}%-10s${NC} %s\n" "$service" "ENABLED" "$description"
                 ((enabled++))
                 ;;
             "installed")
-                printf "${BLUE}%-25s${NC} ${BLUE}%-10s${NC} %s\n" "$service" "INSTALADO" "$description"
+                printf "${BLUE}%-25s${NC} ${BLUE}%-10s${NC} %s\n" "$service" "INSTALLED" "$description"
                 ((installed++))
                 ;;
             *)
@@ -347,25 +347,25 @@ list_services() {
     done
     
     echo ""
-    echo -e "${BOLD}RESUMO:${NC}"
-    echo -e "  ${RED}● Ativos: $running${NC}"
-    echo -e "  ${YELLOW}● Habilitados: $enabled${NC}"
-    echo -e "  ${BLUE}● Instalados: $installed${NC}"
+    echo -e "${BOLD}SUMMARY:${NC}"
+    echo -e "  ${RED}● Active: $running${NC}"
+    echo -e "  ${YELLOW}● Enabled: $enabled${NC}"
+    echo -e "  ${BLUE}● Installed: $installed${NC}"
     echo ""
 }
 
 # ============================================================================
-# MODO 1: AUTOMÁTICO
+# MODE 1: AUTOMATIC
 # ============================================================================
 
 mode_automatic() {
     local -n services=$1
     
-    echo -e "\n${GREEN}${BOLD}═══ MODO AUTOMÁTICO ═══${NC}"
-    echo -e "Desativando todos os serviços desnecessários...\n"
+    echo -e "\n${GREEN}${BOLD}═══ AUTOMATIC MODE ═══${NC}"
+    echo -e "Disabling all unnecessary services...\n"
     
     if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}⚠️  MODO SIMULAÇÃO - Nenhuma alteração será feita${NC}\n"
+        echo -e "${YELLOW}⚠️  SIMULATION MODE - No changes will be made${NC}\n"
     fi
     
     local success=0
@@ -395,48 +395,48 @@ mode_automatic() {
     done
     
     echo ""
-    echo -e "${BOLD}═══ RESULTADO ═══${NC}"
-    echo -e "  ${GREEN}✓ Desativados: $success${NC}"
-    echo -e "  ${RED}✗ Falharam: $failed${NC}"
-    echo -e "  ${BLUE}⊘ Pulados: $skipped${NC}"
+    echo -e "${BOLD}═══ RESULT ═══${NC}"
+    echo -e "  ${GREEN}✓ Disabled: $success${NC}"
+    echo -e "  ${RED}✗ Failed: $failed${NC}"
+    echo -e "  ${BLUE}⊝ Skipped: $skipped${NC}"
     
     if [ "$DRY_RUN" = false ]; then
-        echo -e "\n${YELLOW}💡 Reinicie o sistema para aplicar todas as alterações${NC}"
+        echo -e "\n${YELLOW}💡 Restart the system to apply all changes${NC}"
     fi
 }
 
 # ============================================================================
-# MODO 2: AVANÇADO (por categorias)
+# MODE 2: ADVANCED (by categories)
 # ============================================================================
 
 mode_advanced() {
     local -n services=$1
     
-    echo -e "\n${YELLOW}${BOLD}═══ MODO AVANÇADO ═══${NC}"
-    echo -e "Selecione categorias de serviços para desativar\n"
+    echo -e "\n${YELLOW}${BOLD}═══ ADVANCED MODE ═══${NC}"
+    echo -e "Select service categories to disable\n"
     
-    # Categorias
+    # Categories
     declare -A categories
-    categories["Servidores Web"]="apache2 nginx"
-    categories["Banco de Dados"]="mysql mariadb postgresql mongodb redis-server memcached"
+    categories["Web Servers"]="apache2 nginx"
+    categories["Databases"]="mysql mariadb postgresql mongodb redis-server memcached"
     categories["Containers"]="docker containerd lxd snapd"
-    categories["Impressão"]="cups cups-browsed"
+    categories["Printing"]="cups cups-browsed"
     categories["Bluetooth"]="bluetooth blueman-mechanism"
-    categories["Som/Áudio"]="pulseaudio pipewire pipewire-pulse alsa-state alsa-restore"
-    categories["Interface Gráfica"]="gdm gdm3 lightdm sddm xdm"
-    categories["Rede"]="avahi-daemon ModemManager NetworkManager smbd nmbd nfs-server"
+    categories["Sound/Audio"]="pulseaudio pipewire pipewire-pulse alsa-state alsa-restore"
+    categories["Graphical Interface"]="gdm gdm3 lightdm sddm xdm"
+    categories["Network"]="avahi-daemon ModemManager NetworkManager smbd nmbd nfs-server"
     categories["Email"]="postfix dovecot exim4"
-    categories["Relatórios"]="apport whoopsie kerneloops"
-    categories["Outros"]="fwupd packagekit unattended-upgrades tracker tracker-miner-fs"
+    categories["Reports"]="apport whoopsie kerneloops"
+    categories["Others"]="fwupd packagekit unattended-upgrades tracker tracker-miner-fs"
     
     if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}⚠️  MODO SIMULAÇÃO - Nenhuma alteração será feita${NC}\n"
+        echo -e "${YELLOW}⚠️  SIMULATION MODE - No changes will be made${NC}\n"
     fi
     
     local i=1
     declare -A cat_index
     
-    echo -e "${BOLD}Categorias disponíveis:${NC}\n"
+    echo -e "${BOLD}Available categories:${NC}\n"
     for cat in "${!categories[@]}"; do
         local cat_services="${categories[$cat]}"
         local active=0
@@ -449,22 +449,22 @@ mode_advanced() {
         done
         
         if [ $active -gt 0 ]; then
-            echo -e "  ${CYAN}[$i]${NC} $cat (${RED}$active ativos${NC})"
+            echo -e "  ${CYAN}[$i]${NC} $cat (${RED}$active active${NC})"
         else
-            echo -e "  ${CYAN}[$i]${NC} $cat (${GREEN}nenhum ativo${NC})"
+            echo -e "  ${CYAN}[$i]${NC} $cat (${GREEN}none active${NC})"
         fi
         cat_index[$i]="$cat"
         ((i++))
     done
     
-    echo -e "\n  ${CYAN}[A]${NC} Selecionar TODAS"
-    echo -e "  ${CYAN}[0]${NC} Sair"
+    echo -e "\n  ${CYAN}[A]${NC} Select ALL"
+    echo -e "  ${CYAN}[0]${NC} Exit"
     echo ""
     
-    read -rp "Digite os números separados por espaço (ex: 1 3 5) ou 'A' para todas: " selection
+    read -rp "Enter numbers separated by space (ex: 1 3 5) or 'A' for all: " selection
     
     if [ "$selection" = "0" ]; then
-        echo "Saindo..."
+        echo "Exiting..."
         exit 0
     fi
     
@@ -479,13 +479,13 @@ mode_advanced() {
             if [ -n "${cat_index[$num]}" ]; then
                 local cat="${cat_index[$num]}"
                 selected_services+=" ${categories[$cat]}"
-                echo -e "  ${GREEN}✓${NC} Selecionado: $cat"
+                echo -e "  ${GREEN}✓${NC} Selected: $cat"
             fi
         done
     fi
     
     echo ""
-    echo -e "${BOLD}Desativando serviços selecionados...${NC}\n"
+    echo -e "${BOLD}Disabling selected services...${NC}\n"
     
     local success=0
     local failed=0
@@ -504,31 +504,31 @@ mode_advanced() {
     done
     
     echo ""
-    echo -e "${BOLD}═══ RESULTADO ═══${NC}"
-    echo -e "  ${GREEN}✓ Desativados: $success${NC}"
-    echo -e "  ${RED}✗ Falharam: $failed${NC}"
+    echo -e "${BOLD}═══ RESULT ═══${NC}"
+    echo -e "  ${GREEN}✓ Disabled: $success${NC}"
+    echo -e "  ${RED}✗ Failed: $failed${NC}"
 }
 
 # ============================================================================
-# MODO 3: INTERATIVO
+# MODE 3: INTERACTIVE
 # ============================================================================
 
 mode_interactive() {
     local -n services=$1
     
-    echo -e "\n${CYAN}${BOLD}═══ MODO INTERATIVO ═══${NC}"
-    echo -e "Você será questionado sobre cada serviço ativo\n"
+    echo -e "\n${CYAN}${BOLD}═══ INTERACTIVE MODE ═══${NC}"
+    echo -e "You will be asked about each active service\n"
     
     if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}⚠️  MODO SIMULAÇÃO - Nenhuma alteração será feita${NC}\n"
+        echo -e "${YELLOW}⚠️  SIMULATION MODE - No changes will be made${NC}\n"
     fi
     
-    echo -e "${BOLD}Teclas:${NC}"
-    echo -e "  ${GREEN}[S/s/Enter]${NC} - Sim, desativar"
-    echo -e "  ${RED}[N/n]${NC}       - Não, manter"
-    echo -e "  ${YELLOW}[P/p]${NC}       - Pular todos restantes"
-    echo -e "  ${CYAN}[A/a]${NC}       - Desativar todos restantes"
-    echo -e "  ${MAGENTA}[Q/q]${NC}       - Sair"
+    echo -e "${BOLD}Keys:${NC}"
+    echo -e "  ${GREEN}[Y/y/Enter]${NC} - Yes, disable"
+    echo -e "  ${RED}[N/n]${NC}       - No, keep"
+    echo -e "  ${YELLOW}[S/s]${NC}       - Skip all remaining"
+    echo -e "  ${CYAN}[A/a]${NC}       - Disable all remaining"
+    echo -e "  ${MAGENTA}[Q/q]${NC}       - Quit"
     echo ""
     
     local success=0
@@ -541,12 +541,12 @@ mode_interactive() {
         local status
         status=$(get_service_status "$service")
         
-        # Pular serviços não instalados ou já desativados
+        # Skip non-installed or already disabled services
         if [ "$status" = "not-found" ] || [ "$status" = "installed" ]; then
             continue
         fi
         
-        # Se auto_yes está ativo, desativa automaticamente
+        # If auto_yes is active, disable automatically
         if [ "$auto_yes" = true ]; then
             if disable_service "$service" "$description"; then
                 ((success++))
@@ -556,12 +556,12 @@ mode_interactive() {
         
         echo ""
         echo -e "╭─────────────────────────────────────────────────────────────"
-        echo -e "│ ${BOLD}Serviço:${NC} ${CYAN}$service${NC}"
+        echo -e "│ ${BOLD}Service:${NC} ${CYAN}$service${NC}"
         echo -e "│ ${BOLD}Status:${NC}  ${RED}$status${NC}"
-        echo -e "│ ${BOLD}Descrição:${NC} $description"
+        echo -e "│ ${BOLD}Description:${NC} $description"
         echo -e "╰─────────────────────────────────────────────────────────────"
         
-        read -rp "  Desativar este serviço? [S/n/p/a/q]: " answer
+        read -rp "  Disable this service? [Y/n/s/a/q]: " answer
         
         case ${answer,,} in
             ""|"s"|"y"|"sim"|"yes")
@@ -569,81 +569,81 @@ mode_interactive() {
                     ((success++))
                 fi
                 ;;
-            "n"|"não"|"no")
-                echo -e "  ${BLUE}⊘${NC} Mantendo $service"
+            "n"|"no")
+                echo -e "  ${BLUE}⊘${NC} Keeping $service"
                 ((skipped++))
                 ;;
-            "p"|"pular"|"skip")
-                echo -e "  ${YELLOW}⏭️  Pulando todos os restantes${NC}"
+            "s"|"skip")
+                echo -e "  ${YELLOW}⏭️  Skipping all remaining${NC}"
                 break
                 ;;
-            "a"|"all"|"todos")
-                echo -e "  ${CYAN}⚡ Desativando todos os restantes${NC}"
+            "a"|"all")
+                echo -e "  ${CYAN}⚡ Disabling all remaining${NC}"
                 auto_yes=true
                 if disable_service "$service" "$description"; then
                     ((success++))
                 fi
                 ;;
-            "q"|"quit"|"sair")
-                echo -e "  ${MAGENTA}👋 Saindo...${NC}"
+            "q"|"quit")
+                echo -e "  ${MAGENTA}👋 Exiting...${NC}"
                 break
                 ;;
             *)
-                echo -e "  ${BLUE}⊘${NC} Mantendo $service (resposta inválida)"
+                echo -e "  ${BLUE}⊘${NC} Keeping $service (invalid response)"
                 ((skipped++))
                 ;;
         esac
     done
     
     echo ""
-    echo -e "${BOLD}═══ RESULTADO ═══${NC}"
-    echo -e "  ${GREEN}✓ Desativados: $success${NC}"
-    echo -e "  ${BLUE}⊘ Mantidos: $skipped${NC}"
+    echo -e "${BOLD}═══ RESULT ═══${NC}"
+    echo -e "  ${GREEN}✓ Disabled: $success${NC}"
+    echo -e "  ${BLUE}⊝ Kept: $skipped${NC}"
     
     if [ "$DRY_RUN" = false ] && [ $success -gt 0 ]; then
-        echo -e "\n${YELLOW}💡 Reinicie o sistema para aplicar todas as alterações${NC}"
+        echo -e "\n${YELLOW}💡 Restart the system to apply all changes${NC}"
     fi
 }
 
 # ============================================================================
-# SELEÇÃO DE TIPO DE SISTEMA
+# SYSTEM TYPE SELECTION
 # ============================================================================
 
 select_system_type() {
-    echo -e "\n${BOLD}Selecione o tipo de sistema:${NC}\n"
-    echo -e "  ${CYAN}[1]${NC} 🖥️  Desktop - Computador pessoal com interface gráfica"
-    echo -e "  ${CYAN}[2]${NC} 🖧  Servidor - Servidor sem interface gráfica"
-    echo -e "  ${CYAN}[3]${NC} 📦 Container - Ambiente containerizado (Docker/LXC)"
+    echo -e "\n${BOLD}Select system type:${NC}\n"
+    echo -e "  ${CYAN}[1]${NC} 🖥️  Desktop - Personal computer with graphical interface"
+    echo -e "  ${CYAN}[2]${NC} 🖧  Server - Server without graphical interface"
+    echo -e "  ${CYAN}[3]${NC} 📦 Container - Containerized environment (Docker/LXC)"
     echo ""
     
-    read -rp "Escolha [1-3]: " choice
+    read -rp "Choose [1-3]: " choice
     
     case $choice in
         1) SYSTEM_TYPE="desktop" ;;
         2) SYSTEM_TYPE="server" ;;
         3) SYSTEM_TYPE="container" ;;
         *)
-            echo -e "${RED}Opção inválida!${NC}"
+            echo -e "${RED}Invalid option!${NC}"
             exit 1
             ;;
     esac
 }
 
 select_mode() {
-    echo -e "\n${BOLD}Selecione o modo de operação:${NC}\n"
-    echo -e "  ${GREEN}[1]${NC} ⚡ Automático   - Desativa todos os serviços recomendados"
-    echo -e "  ${YELLOW}[2]${NC} 🔧 Avançado     - Seleciona categorias de serviços"
-    echo -e "  ${CYAN}[3]${NC} 💬 Interativo   - Pergunta para cada serviço"
+    echo -e "\n${BOLD}Select operation mode:${NC}\n"
+    echo -e "  ${GREEN}[1]${NC} ⚡ Automatic   - Disables all recommended services"
+    echo -e "  ${YELLOW}[2]${NC} 🔧 Advanced     - Selects service categories"
+    echo -e "  ${CYAN}[3]${NC} 💬 Interactive   - Asks for each service"
     echo ""
     
-    read -rp "Escolha [1-3]: " choice
+    read -rp "Choose [1-3]: " choice
     
     case $choice in
         1) MODE="automatic" ;;
         2) MODE="advanced" ;;
         3) MODE="interactive" ;;
         *)
-            echo -e "${RED}Opção inválida!${NC}"
+            echo -e "${RED}Invalid option!${NC}"
             exit 1
             ;;
     esac
@@ -656,7 +656,7 @@ select_mode() {
 main() {
     local list_only=false
     
-    # Processar argumentos
+    # Process arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
             -t|--type)
@@ -685,7 +685,7 @@ main() {
                 exit 0
                 ;;
             *)
-                echo -e "${RED}Opção desconhecida: $1${NC}"
+                echo -e "${RED}Unknown option: $1${NC}"
                 show_help
                 exit 1
                 ;;
@@ -694,12 +694,12 @@ main() {
     
     print_banner
     
-    # Se não especificou tipo, perguntar
+    # If type not specified, ask
     if [ -z "$SYSTEM_TYPE" ]; then
         select_system_type
     fi
     
-    # Selecionar array de serviços baseado no tipo
+    # Select service array based on type
     local services_ref
     case $SYSTEM_TYPE in
         "desktop")
@@ -712,39 +712,39 @@ main() {
             services_ref="CONTAINER_UNNECESSARY"
             ;;
         *)
-            echo -e "${RED}Tipo de sistema inválido: $SYSTEM_TYPE${NC}"
-            echo "Use: desktop, server ou container"
+            echo -e "${RED}Invalid system type: $SYSTEM_TYPE${NC}"
+            echo "Use: desktop, server or container"
             exit 1
             ;;
     esac
     
-    # Se é apenas listagem
+    # If only listing
     if [ "$list_only" = true ]; then
         case $SYSTEM_TYPE in
             "desktop") list_services DESKTOP_UNNECESSARY "DESKTOP" ;;
-            "server"|"servidor") list_services SERVER_UNNECESSARY "SERVIDOR" ;;
+            "server"|"servidor") list_services SERVER_UNNECESSARY "SERVER" ;;
             "container"|"docker") list_services CONTAINER_UNNECESSARY "CONTAINER" ;;
         esac
         exit 0
     fi
     
-    # Verificar root (exceto em dry-run)
+    # Check root (except in dry-run)
     if [ "$DRY_RUN" = false ]; then
         check_root
     fi
     
-    # Se não especificou modo, perguntar
+    # If mode not specified, ask
     if [ -z "$MODE" ]; then
         select_mode
     fi
     
-    # Log inicial
+    # Log initial
     log "=== Starting Service Optimizer ==="
     log "System Type: $SYSTEM_TYPE"
     log "Mode: $MODE"
     log "Dry Run: $DRY_RUN"
     
-    # Executar modo selecionado
+    # Execute selected mode
     case $MODE in
         "automatic"|"auto"|"1")
             case $SYSTEM_TYPE in
@@ -768,13 +768,13 @@ main() {
             esac
             ;;
         *)
-            echo -e "${RED}Modo inválido: $MODE${NC}"
+            echo -e "${RED}Invalid mode: $MODE${NC}"
             exit 1
             ;;
     esac
     
     echo ""
-    echo -e "${BLUE}📝 Log salvo em: $LOG_FILE${NC}"
+    echo -e "${BLUE}📝 Log saved at: $LOG_FILE${NC}"
     log "=== Finished ==="
 }
 

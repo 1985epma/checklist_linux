@@ -2,14 +2,14 @@
 
 ################################################################################
 # i18n Demo Script
-# Demonstração do sistema de internacionalização
-# Autor: Everton Araujo
-# Versão: 1.0
+# Demonstration of the internationalization system
+# Author: Everton Araujo
+# Version: 1.0
 ################################################################################
 
 set -euo pipefail
 
-# Carregar biblioteca i18n
+# Load i18n library
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/i18n/i18n.sh"
 
@@ -22,7 +22,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 ################################################################################
-# Funções
+# Functions
 ################################################################################
 
 print_header() {
@@ -39,7 +39,7 @@ print_info() {
     echo -e "${CYAN}ℹ${NC} $1"
 }
 
-# Demonstração do menu principal
+# Main menu demonstration
 show_demo_menu() {
     clear
     print_header "$(translate MENU_TITLE)"
@@ -119,7 +119,7 @@ demo_service_optimizer() {
     echo "  1) $(translate SRV_TYPE_DESKTOP)"
     echo "  2) $(translate SRV_TYPE_SERVER)"
     echo "  3) $(translate SRV_TYPE_CONTAINER)"
-    read -p "Opção [1-3]: " type_choice
+    read -p "Option [1-3]: " type_choice
     
     echo ""
     echo "$(translate SRV_ANALYZING)..."
@@ -199,16 +199,16 @@ demo_corporate_sudo() {
     show_demo_menu
 }
 
-# Exibir informações do idioma
+# Display language information
 show_language_info() {
     clear
     print_header "$(translate MSG_INFO)"
     echo ""
     print_info "$(translate SYS_CHECKING)"
     echo ""
-    echo "  Idioma atual: $(get_current_language_name) ($CURRENT_LANG)"
+    echo "  Current language: $(get_current_language_name) ($CURRENT_LANG)"
     echo ""
-    echo "Idiomas disponíveis:"
+    echo "Available languages:"
     list_available_languages | while read -r line; do
         echo "  - $line"
     done
@@ -221,45 +221,45 @@ show_language_info() {
 ################################################################################
 
 main() {
-    # Verificar se quer menu de seleção de idioma
+    # Check if wants language selection menu
     if [[ "${1:-}" == "--select-lang" ]] || [[ "${1:-}" == "-l" ]]; then
         init_i18n false
     else
-        # Detectar automaticamente
+        # Auto-detect
         init_i18n true
     fi
     
-    # Verificar se idioma foi carregado
+    # Check if language was loaded
     if ! is_language_loaded; then
-        echo "Erro: Falha ao carregar idioma"
+        echo "Error: Failed to load language"
         exit 1
     fi
     
-    # Mostrar informações do idioma se solicitado
+    # Show language information if requested
     if [[ "${1:-}" == "--info" ]] || [[ "${1:-}" == "-i" ]]; then
         show_language_info
         exit 0
     fi
     
-    # Mostrar menu principal
+    # Show main menu
     show_demo_menu
 }
 
-# Ajuda
+# Help
 if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
-    echo "i18n Demo Script - Demonstração do sistema de internacionalização"
+    echo "i18n Demo Script - Demonstration of the internationalization system"
     echo ""
-    echo "Uso: $0 [opções]"
+    echo "Usage: $0 [options]"
     echo ""
-    echo "Opções:"
-    echo "  -l, --select-lang    Mostrar menu de seleção de idioma"
-    echo "  -i, --info           Mostrar informações do idioma"
-    echo "  -h, --help           Mostrar esta ajuda"
+    echo "Options:"
+    echo "  -l, --select-lang    Show language selection menu"
+    echo "  -i, --info           Show language information"
+    echo "  -h, --help           Show this help"
     echo ""
-    echo "Idiomas suportados: pt_BR, en_US, es_ES"
+    echo "Supported languages: pt_BR, en_US, es_ES"
     echo ""
     exit 0
 fi
 
-# Executar main
+# Execute main
 main "$@"

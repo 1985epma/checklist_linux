@@ -2,21 +2,21 @@
 
 # ============================================================================
 # EPMA Security Tools - Security Checklist
-# Autor: Everton Araujo
-# Data: 2025-12-22
-# Versão: 2.0
+# Author: Everton Araujo
+# Date: 2025-12-22
+# Version: 2.0
 # 
-# Descrição: Checklist de segurança para Ubuntu Linux com relatórios HTML/CSV
+# Description: Security checklist for Ubuntu Linux with HTML/CSV reports
 # ============================================================================
 
-# Cores para output no terminal
+# Colors for terminal output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Variáveis globais
+# Global variables
 REPORT_FORMAT="terminal"
 OUTPUT_FILE=""
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
@@ -27,19 +27,19 @@ CURRENT_DATE=$(date)
 # Arrays para armazenar resultados
 declare -a RESULTS=()
 
-# Função de ajuda
+# Help function
 show_help() {
-    echo "Uso: $0 [OPÇÕES]"
+    echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Opções:"
-    echo "  -f, --format FORMAT    Formato de saída: terminal (padrão), html, csv"
-    echo "  -o, --output FILE      Arquivo de saída (padrão: report_TIMESTAMP.FORMAT)"
-    echo "  -h, --help             Mostrar esta ajuda"
+    echo "Options:"
+    echo "  -f, --format FORMAT    Output format: terminal (default), html, csv"
+    echo "  -o, --output FILE      Output file (default: report_TIMESTAMP.FORMAT)"
+    echo "  -h, --help             Show this help"
     echo ""
-    echo "Exemplos:"
-    echo "  $0                           # Saída no terminal"
-    echo "  $0 -f html                   # Gera relatório HTML"
-    echo "  $0 -f csv -o relatorio.csv   # Gera relatório CSV personalizado"
+    echo "Examples:"
+    echo "  $0                           # Terminal output"
+    echo "  $0 -f html                   # Generate HTML report"
+    echo "  $0 -f csv -o report.csv      # Generate custom CSV report"
     echo "  $0 --format html --output security_report.html"
 }
 
@@ -59,19 +59,19 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         *)
-            echo "Opção desconhecida: $1"
+            echo "Unknown option: $1"
             show_help
             exit 1
             ;;
     esac
 done
 
-# Definir arquivo de saída padrão
+# Define default output file
 if [ -z "$OUTPUT_FILE" ] && [ "$REPORT_FORMAT" != "terminal" ]; then
     OUTPUT_FILE="security_report_${TIMESTAMP}.${REPORT_FORMAT}"
 fi
 
-# Função para adicionar resultado
+# Function to add result
 add_result() {
     local category="$1"
     local item="$2"
@@ -83,7 +83,7 @@ add_result() {
 }
 
 # ============================================
-# FUNÇÕES DE VERIFICAÇÃO
+# VERIFICATION FUNCTIONS
 # ============================================
 
 check_updates() {
@@ -92,25 +92,25 @@ check_updates() {
     
     if [ "$UPDATES" -gt 0 ]; then
         if [ "$UPDATES" -gt 50 ]; then
-            add_result "Sistema" "Atualizações" "CRITICAL" "$UPDATES pacotes desatualizados" "Execute: sudo apt upgrade"
+            add_result "System" "Updates" "CRITICAL" "$UPDATES outdated packages" "Run: sudo apt upgrade"
         else
-            add_result "Sistema" "Atualizações" "WARNING" "$UPDATES pacotes desatualizados" "Execute: sudo apt upgrade"
+            add_result "System" "Updates" "WARNING" "$UPDATES outdated packages" "Run: sudo apt upgrade"
         fi
     else
-        add_result "Sistema" "Atualizações" "OK" "Sistema atualizado" "-"
+        add_result "System" "Updates" "OK" "System up to date" "-"
     fi
 }
 
 check_firewall() {
     if ! command -v ufw &> /dev/null; then
-        add_result "Firewall" "UFW" "CRITICAL" "UFW não instalado" "Instale: sudo apt install ufw"
+        add_result "Firewall" "UFW" "CRITICAL" "UFW not installed" "Install: sudo apt install ufw"
     else
         STATUS=$(sudo ufw status | grep Status | awk '{print $2}')
         if [ "$STATUS" = "active" ]; then
             RULES=$(sudo ufw status | grep -c "ALLOW\|DENY\|REJECT")
-            add_result "Firewall" "UFW" "OK" "Ativo com $RULES regras" "-"
+            add_result "Firewall" "UFW" "OK" "Active with $RULES rules" "-"
         else
-            add_result "Firewall" "UFW" "CRITICAL" "Firewall inativo" "Ative: sudo ufw enable"
+            add_result "Firewall" "UFW" "CRITICAL" "Firewall inactive" "Activate: sudo ufw enable"
         fi
     fi
 }
@@ -118,7 +118,7 @@ check_firewall() {
 check_services() {
     SERVICES_COUNT=$(systemctl list-units --type=service --state=running --no-pager | grep -c "running")
     
-    # Verificar serviços potencialmente perigosos
+    # Check potentially dangerous services
     DANGEROUS_SERVICES=("telnet" "ftp" "rsh" "rlogin")
     FOUND_DANGEROUS=""
     
@@ -129,37 +129,37 @@ check_services() {
     done
     
     if [ -n "$FOUND_DANGEROUS" ]; then
-        add_result "Serviços" "Serviços Perigosos" "CRITICAL" "Encontrados:$FOUND_DANGEROUS" "Desative serviços inseguros"
+        add_result "Services" "Dangerous Services" "CRITICAL" "Found:$FOUND_DANGEROUS" "Disable insecure services"
     else
-        add_result "Serviços" "Serviços Perigosos" "OK" "Nenhum serviço perigoso ativo" "-"
+        add_result "Services" "Dangerous Services" "OK" "No dangerous services active" "-"
     fi
     
-    add_result "Serviços" "Total Ativos" "INFO" "$SERVICES_COUNT serviços em execução" "Revise periodicamente"
+    add_result "Services" "Total Active" "INFO" "$SERVICES_COUNT services running" "Review periodically"
 }
 
 check_users() {
-    # Usuários com shell
+    # Users with shell
     SHELL_USERS=$(awk -F: '$7 ~ /\/bin\/(bash|sh)$/{print $1}' /etc/passwd | tr '\n' ', ' | sed 's/,$//')
     SHELL_COUNT=$(awk -F: '$7 ~ /\/bin\/(bash|sh)$/{print $1}' /etc/passwd | wc -l)
     
-    add_result "Usuários" "Com Shell" "INFO" "$SHELL_COUNT usuários: $SHELL_USERS" "Revise contas desnecessárias"
+    add_result "Users" "With Shell" "INFO" "$SHELL_COUNT users: $SHELL_USERS" "Review unnecessary accounts"
     
-    # Usuários root-like
+    # Root-like users
     ROOT_USERS=$(awk -F: '($3 == 0) {print $1}' /etc/passwd | tr '\n' ', ' | sed 's/,$//')
     ROOT_COUNT=$(awk -F: '($3 == 0) {print $1}' /etc/passwd | wc -l)
     
     if [ "$ROOT_COUNT" -gt 1 ]; then
-        add_result "Usuários" "UID 0 (root)" "WARNING" "$ROOT_COUNT contas root: $ROOT_USERS" "Apenas root deveria ter UID 0"
+        add_result "Users" "UID 0 (root)" "WARNING" "$ROOT_COUNT root accounts: $ROOT_USERS" "Only root should have UID 0"
     else
-        add_result "Usuários" "UID 0 (root)" "OK" "Apenas root tem UID 0" "-"
+        add_result "Users" "UID 0 (root)" "OK" "Only root has UID 0" "-"
     fi
     
-    # Usuários sem senha
+    # Users without password
     NOPASS=$(sudo awk -F: '($2 == "" || $2 == "!") {print $1}' /etc/shadow 2>/dev/null | tr '\n' ', ' | sed 's/,$//')
     if [ -n "$NOPASS" ]; then
-        add_result "Usuários" "Sem Senha" "CRITICAL" "Contas sem senha: $NOPASS" "Defina senhas fortes"
+        add_result "Users" "Without Password" "CRITICAL" "Accounts without password: $NOPASS" "Set strong passwords"
     else
-        add_result "Usuários" "Sem Senha" "OK" "Todas as contas têm senha" "-"
+        add_result "Users" "Without Password" "OK" "All accounts have password" "-"
     fi
 }
 
@@ -173,48 +173,48 @@ check_permissions() {
         if [ -f "$FILE" ]; then
             PERMS=$(stat -c "%a" "$FILE")
             if [ "$PERMS" != "$EXPECTED" ]; then
-                add_result "Permissões" "$FILE" "WARNING" "Atual: $PERMS (esperado: $EXPECTED)" "Execute: sudo chmod $EXPECTED $FILE"
+                add_result "Permissions" "$FILE" "WARNING" "Current: $PERMS (expected: $EXPECTED)" "Run: sudo chmod $EXPECTED $FILE"
             else
-                add_result "Permissões" "$FILE" "OK" "Permissões corretas ($EXPECTED)" "-"
+                add_result "Permissions" "$FILE" "OK" "Correct permissions ($EXPECTED)" "-"
             fi
         else
-            add_result "Permissões" "$FILE" "INFO" "Arquivo não encontrado" "-"
+            add_result "Permissions" "$FILE" "INFO" "File not found" "-"
         fi
     done
 }
 
 check_ssh() {
     if [ ! -f /etc/ssh/sshd_config ]; then
-        add_result "SSH" "Instalação" "INFO" "SSH não instalado" "-"
+        add_result "SSH" "Installation" "INFO" "SSH not installed" "-"
         return
     fi
     
     # PermitRootLogin
     PERMIT_ROOT=$(grep "^PermitRootLogin" /etc/ssh/sshd_config | awk '{print $2}')
     if [ "$PERMIT_ROOT" = "yes" ]; then
-        add_result "SSH" "PermitRootLogin" "CRITICAL" "Login root habilitado" "Desative em /etc/ssh/sshd_config"
+        add_result "SSH" "PermitRootLogin" "CRITICAL" "Root login enabled" "Disable in /etc/ssh/sshd_config"
     elif [ -z "$PERMIT_ROOT" ]; then
-        add_result "SSH" "PermitRootLogin" "WARNING" "Não configurado (padrão pode ser inseguro)" "Configure explicitamente como 'no'"
+        add_result "SSH" "PermitRootLogin" "WARNING" "Not configured (default may be insecure)" "Explicitly configure as 'no'"
     else
-        add_result "SSH" "PermitRootLogin" "OK" "Valor: $PERMIT_ROOT" "-"
+        add_result "SSH" "PermitRootLogin" "OK" "Value: $PERMIT_ROOT" "-"
     fi
     
     # PasswordAuthentication
     PASSWORD_AUTH=$(grep "^PasswordAuthentication" /etc/ssh/sshd_config | awk '{print $2}')
     if [ "$PASSWORD_AUTH" = "yes" ]; then
-        add_result "SSH" "PasswordAuthentication" "WARNING" "Autenticação por senha ativa" "Considere usar apenas chaves SSH"
+        add_result "SSH" "PasswordAuthentication" "WARNING" "Password authentication active" "Consider using only SSH keys"
     elif [ -z "$PASSWORD_AUTH" ]; then
-        add_result "SSH" "PasswordAuthentication" "INFO" "Usando configuração padrão" "Configure explicitamente"
+        add_result "SSH" "PasswordAuthentication" "INFO" "Using default configuration" "Configure explicitly"
     else
-        add_result "SSH" "PasswordAuthentication" "OK" "Valor: $PASSWORD_AUTH" "-"
+        add_result "SSH" "PasswordAuthentication" "OK" "Value: $PASSWORD_AUTH" "-"
     fi
     
-    # Porta SSH
+    # SSH Port
     SSH_PORT=$(grep "^Port" /etc/ssh/sshd_config | awk '{print $2}')
     if [ -z "$SSH_PORT" ] || [ "$SSH_PORT" = "22" ]; then
-        add_result "SSH" "Porta" "INFO" "Usando porta padrão (22)" "Considere mudar para porta alternativa"
+        add_result "SSH" "Port" "INFO" "Using default port (22)" "Consider changing to alternate port"
     else
-        add_result "SSH" "Porta" "OK" "Porta alternativa: $SSH_PORT" "-"
+        add_result "SSH" "Port" "OK" "Alternate port: $SSH_PORT" "-"
     fi
 }
 
@@ -222,49 +222,49 @@ check_malware() {
     if command -v rkhunter &> /dev/null; then
         WARNINGS=$(sudo rkhunter --check --skip-keypress --quiet 2>/dev/null | grep -c "Warning")
         if [ "$WARNINGS" -gt 0 ]; then
-            add_result "Malware" "rkhunter" "WARNING" "$WARNINGS avisos encontrados" "Execute: sudo rkhunter --check para detalhes"
+            add_result "Malware" "rkhunter" "WARNING" "$WARNINGS warnings found" "Run: sudo rkhunter --check for details"
         else
-            add_result "Malware" "rkhunter" "OK" "Nenhum problema detectado" "-"
+            add_result "Malware" "rkhunter" "OK" "No issues detected" "-"
         fi
     else
-        add_result "Malware" "rkhunter" "INFO" "rkhunter não instalado" "Instale: sudo apt install rkhunter"
+        add_result "Malware" "rkhunter" "INFO" "rkhunter not installed" "Install: sudo apt install rkhunter"
     fi
     
     if command -v clamav &> /dev/null; then
-        add_result "Malware" "ClamAV" "OK" "ClamAV instalado" "-"
+        add_result "Malware" "ClamAV" "OK" "ClamAV installed" "-"
     else
-        add_result "Malware" "ClamAV" "INFO" "ClamAV não instalado" "Instale: sudo apt install clamav"
+        add_result "Malware" "ClamAV" "INFO" "ClamAV not installed" "Install: sudo apt install clamav"
     fi
 }
 
 check_network() {
-    # Portas abertas
+    # Open ports
     LISTENING=$(ss -tuln | grep LISTEN | wc -l)
-    add_result "Rede" "Portas Abertas" "INFO" "$LISTENING portas em escuta" "Revise com: ss -tuln"
+    add_result "Network" "Open Ports" "INFO" "$LISTENING ports listening" "Review with: ss -tuln"
     
     # IPv6
     if [ -f /proc/sys/net/ipv6/conf/all/disable_ipv6 ]; then
         IPV6_DISABLED=$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6)
         if [ "$IPV6_DISABLED" = "1" ]; then
-            add_result "Rede" "IPv6" "OK" "IPv6 desabilitado" "-"
+            add_result "Network" "IPv6" "OK" "IPv6 disabled" "-"
         else
-            add_result "Rede" "IPv6" "INFO" "IPv6 habilitado" "Desabilite se não usar"
+            add_result "Network" "IPv6" "INFO" "IPv6 enabled" "Disable if not in use"
         fi
     fi
 }
 
 # ============================================
-# FUNÇÕES DE OUTPUT
+# OUTPUT FUNCTIONS
 # ============================================
 
 output_terminal() {
     echo -e "${BLUE}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║      🛡️  CHECKLIST DE SEGURANÇA - UBUNTU LINUX  🛡️           ║${NC}"
-    echo -e "${BLUE}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${BLUE}║      🛡️  SECURITY CHECKLIST - UBUNTU LINUX  🛡️           ║${NC}"
+    echo -e "${BLUE}╚══════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo -e "📅 Data/Hora: ${CURRENT_DATE}"
+    echo -e "📅 Date/Time: ${CURRENT_DATE}"
     echo -e "🖥️  Hostname: ${HOSTNAME}"
-    echo -e "🐧 Sistema: ${UBUNTU_VERSION}"
+    echo -e "🐧 System: ${UBUNTU_VERSION}"
     echo ""
     echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
     
@@ -297,15 +297,15 @@ output_terminal() {
     echo ""
     echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
     
-    # Resumo
+    # Summary
     local ok_count=$(printf '%s\n' "${RESULTS[@]}" | grep -c "|OK|")
     local warn_count=$(printf '%s\n' "${RESULTS[@]}" | grep -c "|WARNING|")
     local crit_count=$(printf '%s\n' "${RESULTS[@]}" | grep -c "|CRITICAL|")
     local info_count=$(printf '%s\n' "${RESULTS[@]}" | grep -c "|INFO|")
     
     echo ""
-    echo -e "${BLUE}📊 RESUMO${NC}"
-    echo -e "  ${GREEN}✅ OK: $ok_count${NC} | ${YELLOW}⚠️  Avisos: $warn_count${NC} | ${RED}❌ Críticos: $crit_count${NC} | ${BLUE}ℹ️  Info: $info_count${NC}"
+    echo -e "${BLUE}📊 SUMMARY${NC}"
+    echo -e "  ${GREEN}✅ OK: $ok_count${NC} | ${YELLOW}⚠️  Warnings: $warn_count${NC} | ${RED}❌ Critical: $crit_count${NC} | ${BLUE}ℹ️  Info: $info_count${NC}"
     echo ""
 }
 
@@ -317,7 +317,7 @@ output_html() {
     
     cat > "$OUTPUT_FILE" << 'HTMLHEADER'
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -358,7 +358,7 @@ output_html() {
     <div class="container">
         <div class="header">
             <h1>🛡️ Security Checklist Report</h1>
-            <p>Relatório de Segurança do Sistema</p>
+            <p>System Security Report</p>
             <div class="info">
 HTMLHEADER
 
@@ -372,8 +372,8 @@ HTMLHEADER
         
         <div class="summary">
             <div class="summary-card ok"><h3>$ok_count</h3><p>✅ OK</p></div>
-            <div class="summary-card warning"><h3>$warn_count</h3><p>⚠️ Avisos</p></div>
-            <div class="summary-card critical"><h3>$crit_count</h3><p>❌ Críticos</p></div>
+            <div class="summary-card warning"><h3>$warn_count</h3><p>⚠️ Warnings</p></div>
+            <div class="summary-card critical"><h3>$crit_count</h3><p>❌ Critical</p></div>
             <div class="summary-card info"><h3>$info_count</h3><p>ℹ️ Info</p></div>
         </div>
 HTMLSUMMARY
@@ -392,7 +392,7 @@ HTMLSUMMARY
             echo "        <div class=\"category\">" >> "$OUTPUT_FILE"
             echo "            <div class=\"category-header\">$category</div>" >> "$OUTPUT_FILE"
             echo "            <table>" >> "$OUTPUT_FILE"
-            echo "                <tr><th>Item</th><th>Status</th><th>Descrição</th><th>Recomendação</th></tr>" >> "$OUTPUT_FILE"
+            echo "                <tr><th>Item</th><th>Status</th><th>Description</th><th>Recommendation</th></tr>" >> "$OUTPUT_FILE"
             table_open=true
         fi
         
@@ -416,38 +416,38 @@ HTMLSUMMARY
     cat >> "$OUTPUT_FILE" << 'HTMLFOOTER'
         
         <div class="footer">
-            <p>Relatório gerado por Security Checklist Script v2.0</p>
-            <p>🔒 Mantenha seu sistema seguro!</p>
+            <p>Report generated automatically by Security Checklist Script v2.0</p>
+            <p>🔒 Keep your system secure!</p>
         </div>
     </div>
 </body>
 </html>
 HTMLFOOTER
 
-    echo -e "${GREEN}✅ Relatório HTML gerado: ${OUTPUT_FILE}${NC}"
+    echo -e "${GREEN}✅ HTML report generated: ${OUTPUT_FILE}${NC}"
 }
 
 output_csv() {
     # Header
-    echo "Categoria,Item,Status,Descrição,Recomendação,Data,Hostname,Sistema" > "$OUTPUT_FILE"
+    echo "Category,Item,Status,Description,Recommendation,Date,Hostname,System" > "$OUTPUT_FILE"
     
     for result in "${RESULTS[@]}"; do
         IFS='|' read -r category item status description recommendation <<< "$result"
-        # Escapar aspas duplas e envolver campos com vírgulas
+        # Escape double quotes and wrap fields with commas
         description=$(echo "$description" | sed 's/"/""/g')
         recommendation=$(echo "$recommendation" | sed 's/"/""/g')
         echo "\"$category\",\"$item\",\"$status\",\"$description\",\"$recommendation\",\"$CURRENT_DATE\",\"$HOSTNAME\",\"$UBUNTU_VERSION\"" >> "$OUTPUT_FILE"
     done
     
-    echo -e "${GREEN}✅ Relatório CSV gerado: ${OUTPUT_FILE}${NC}"
+    echo -e "${GREEN}✅ CSV report generated: ${OUTPUT_FILE}${NC}"
 }
 
 # ============================================
-# EXECUÇÃO PRINCIPAL
+# MAIN EXECUTION
 # ============================================
 
 main() {
-    echo -e "${BLUE}🔍 Executando verificações de segurança...${NC}"
+    echo -e "${BLUE}🔍 Running security checks...${NC}"
     echo ""
     
     check_updates
@@ -470,8 +470,8 @@ main() {
             output_csv
             ;;
         *)
-            echo -e "${RED}Formato desconhecido: $REPORT_FORMAT${NC}"
-            echo "Use: terminal, html ou csv"
+            echo -e "${RED}Unknown format: $REPORT_FORMAT${NC}"
+            echo "Use: terminal, html or csv"
             exit 1
             ;;
     esac

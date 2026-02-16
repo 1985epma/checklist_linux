@@ -1,75 +1,75 @@
 #!/bin/bash
 
-# Script auxiliar para submissão ao Flathub
-# Este script ajuda a completar o processo de submissão
+# Helper script for Flathub submission
+# This script helps complete the submission process
 
 set -e
 
-echo "🚀 CHECK LINUX - Submissão ao Flathub"
+echo "🚀 CHECK LINUX - Flathub Submission"
 echo "======================================"
 echo ""
 
-# Verificar se o diretório existe
+# Check if directory exists
 if [ ! -d "/tmp/flathub-submission" ]; then
-    echo "❌ Erro: Diretório /tmp/flathub-submission não encontrado"
-    echo "Execute primeiro os passos de preparação."
+    echo "❌ Error: Directory /tmp/flathub-submission not found"
+    echo "Run the preparation steps first."
     exit 1
 fi
 
 cd /tmp/flathub-submission
 
-# Verificar se há um remote chamado myfork
+# Check if there's a remote called myfork
 if git remote | grep -q "myfork"; then
-    echo "✅ Remote 'myfork' já está configurado"
+    echo "✅ Remote 'myfork' is already configured"
 else
-    echo "📝 Configurando remote do seu fork..."
+    echo "📝 Configuring your fork remote..."
     echo ""
-    echo "Escolha o método de autenticação:"
-    echo "1) SSH (recomendado se você tem chave SSH configurada)"
+    echo "Choose authentication method:"
+    echo "1) SSH (recommended if you have SSH key configured)"
     echo "2) HTTPS"
-    read -p "Digite 1 ou 2: " choice
+    read -p "Enter 1 or 2: " choice
     
     case $choice in
         1)
             git remote add myfork git@github.com:1985epma/flathub.git
-            echo "✅ Remote configurado via SSH"
+            echo "✅ Remote configured via SSH"
             ;;
         2)
             git remote add myfork https://github.com/1985epma/flathub.git
-            echo "✅ Remote configurado via HTTPS"
+            echo "✅ Remote configured via HTTPS"
             ;;
         *)
-            echo "❌ Opção inválida"
+            echo "❌ Invalid option"
             exit 1
             ;;
     esac
 fi
 
 echo ""
-echo "📤 Fazendo push da branch..."
+echo "📤 Pushing branch..."
 echo ""
 
 if git push myfork com.github._1985epma.ChecklistLinux; then
     echo ""
-    echo "✅ Push realizado com sucesso!"
+    echo "✅ Push completed successfully!"
     echo ""
-    echo "🎉 Próximo passo: Criar Pull Request"
+    echo "🎉 Next step: Create Pull Request"
     echo ""
-    echo "Acesse o link abaixo para criar o PR:"
+    echo "Access the link below to create the PR:"
     echo "👉 https://github.com/flathub/flathub/compare/new-pr...1985epma:flathub:com.github._1985epma.ChecklistLinux"
     echo ""
-    echo "Use as informações do arquivo FLATHUB_SUBMISSION_INSTRUCTIONS.md"
-    echo "para preencher o título e descrição do PR."
+    echo "Use the information from FLATHUB_SUBMISSION_INSTRUCTIONS.md"
+    echo "to fill in the PR title and description."
     echo ""
 else
     echo ""
-    echo "❌ Erro ao fazer push"
+    echo "❌ Error during push"
     echo ""
-    echo "Possíveis soluções:"
-    echo "1. Verifique se você fez o fork em: https://github.com/flathub/flathub/fork"
-    echo "2. Certifique-se de que NÃO marcou 'Copy the master branch only'"
-    echo "3. Verifique suas credenciais do GitHub"
-    echo "4. Se usar SSH, verifique se sua chave SSH está configurada"
+    echo "Possible solutions:"
+    echo "1. Check if you forked at: https://github.com/flathub/flathub/fork"
+    echo "2. Make sure you did NOT check 'Copy the master branch only'"
+    echo "3. Verify your GitHub credentials"
+    echo "4. If using SSH, check if your SSH key is configured"
     echo ""
     exit 1
 fi

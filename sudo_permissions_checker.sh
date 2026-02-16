@@ -2,28 +2,28 @@
 
 ################################################################################
 # SUDO PERMISSIONS CHECKER
-# Script para verificar e auditar permissões de sudo no sistema
-# Autor: Everton Araujo
-# Versão: 1.0
-# Data: 2026-01-13
+# Script to verify and audit sudo permissions on the system
+# Author: Everton Araujo
+# Version: 1.0
+# Date: 2026-01-13
 ################################################################################
 
 set -euo pipefail
 
-# Cores para saída
+# Output colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Variáveis
+# Variables
 REPORT_DIR="./sudo_reports"
 REPORT_FILE="${REPORT_DIR}/sudo_audit_$(date +%Y%m%d_%H%M%S).html"
 CSV_FILE="${REPORT_DIR}/sudo_audit_$(date +%Y%m%d_%H%M%S).csv"
 
 ################################################################################
-# Funções
+# Functions
 ################################################################################
 
 print_header() {
@@ -46,7 +46,7 @@ print_warning() {
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        print_error "Este script deve ser executado com sudo"
+        print_error "This script must be run with sudo"
         exit 1
     fi
 }
@@ -56,71 +56,71 @@ create_report_dir() {
     chmod 700 "${REPORT_DIR}"
 }
 
-# Verificar configuração do sudo
+# Check sudoers configuration
 check_sudo_config() {
-    print_header "Verificando Configuração do Sudoers"
+    print_header "Checking Sudoers Configuration"
     
     echo "" >> "$CSV_FILE"
-    echo "=== CONFIGURAÇÃO DO SUDOERS ===" >> "$CSV_FILE"
+    echo "=== SUDOERS CONFIGURATION ===" >> "$CSV_FILE"
     echo "" >> "$CSV_FILE"
     
     if [[ -f /etc/sudoers ]]; then
-        print_success "Arquivo /etc/sudoers encontrado"
-        echo "sudoers_file,/etc/sudoers,presente" >> "$CSV_FILE"
+        print_success "File /etc/sudoers found"
+        echo "sudoers_file,/etc/sudoers,present" >> "$CSV_FILE"
         
-        # Verificar permissões
+        # Check permissions
         local perms=$(stat -c "%a" /etc/sudoers 2>/dev/null || echo "N/A")
         if [[ "$perms" == "440" ]] || [[ "$perms" == "400" ]]; then
-            print_success "Permissões do sudoers corretas: $perms"
-            echo "sudoers_permissions,$perms,correto" >> "$CSV_FILE"
+            print_success "Sudoers permissions correct: $perms"
+            echo "sudoers_permissions,$perms,correct" >> "$CSV_FILE"
         else
-            print_warning "Permissões do sudoers podem ser inseguras: $perms (esperado: 440 ou 400)"
-            echo "sudoers_permissions,$perms,atencao" >> "$CSV_FILE"
+            print_warning "Sudoers permissions may be insecure: $perms (expected: 440 or 400)"
+            echo "sudoers_permissions,$perms,attention" >> "$CSV_FILE"
         fi
     else
-        print_error "Arquivo /etc/sudoers não encontrado"
-        echo "sudoers_file,N/A,nao_encontrado" >> "$CSV_FILE"
+        print_error "File /etc/sudoers not found"
+        echo "sudoers_file,N/A,not_found" >> "$CSV_FILE"
     fi
 }
 
-# Verificar usuários com acesso sudo
+# Check users with sudo access
 check_sudo_users() {
-    print_header "Verificando Usuários com Acesso Sudo"
+    print_header "Checking Users with Sudo Access"
     
     echo "" >> "$CSV_FILE"
-    echo "=== USUÁRIOS COM ACESSO SUDO ===" >> "$CSV_FILE"
+    echo "=== USERS WITH SUDO ACCESS ===" >> "$CSV_FILE"
     echo "" >> "$CSV_FILE"
     
-    # Verificar grupo sudo/wheel
+    # Check sudo/wheel group
     if getent group sudo &>/dev/null; then
         local sudo_users=$(getent group sudo | cut -d: -f4)
         if [[ -n "$sudo_users" ]]; then
-            print_success "Usuários no grupo 'sudo': $sudo_users"
-            echo "grupo_sudo,$sudo_users,presente" >> "$CSV_FILE"
+            print_success "Users in 'sudo' group: $sudo_users"
+            echo "grupo_sudo,$sudo_users,present" >> "$CSV_FILE"
             
-            # Listar cada usuário
+            # List each user
             IFS=',' read -ra USERS <<< "$sudo_users"
             for user in "${USERS[@]}"; do
                 user=$(echo "$user" | xargs) # trim whitespace
-                echo "usuario_sudo,$user,ativo" >> "$CSV_FILE"
+                echo "sudo_user,$user,active" >> "$CSV_FILE"
             done
         else
-            print_warning "Nenhum usuário no grupo 'sudo'"
-            echo "grupo_sudo,vazio,sem_usuarios" >> "$CSV_FILE"
+            print_warning "No users in 'sudo' group"
+            echo "grupo_sudo,empty,no_users" >> "$CSV_FILE"
         fi
     fi
 }
 
-# Verificar arquivos sudoers.d
+# Check sudoers.d files
 check_sudoers_d() {
-    print_header "Verificando Diretório /etc/sudoers.d"
+    print_header "Checking /etc/sudoers.d Directory"
     
     echo "" >> "$CSV_FILE"
-    echo "=== ARQUIVOS EM /etc/sudoers.d ===" >> "$CSV_FILE"
+    echo "=== FILES IN /etc/sudoers.d ===" >> "$CSV_FILE"
     echo "" >> "$CSV_FILE"
     
     if [[ -d /etc/sudoers.d ]]; then
-        print_success "Diretório /etc/sudoers.d encontrado"
+        print_success "Directory /etc/sudoers.d found"
         
         local file_count=$(ls -1 /etc/sudoers.d 2>/dev/null | wc -l)
         echo "total_arquivos,$file_count" >> "$CSV_FILE"
@@ -132,75 +132,75 @@ check_sudoers_d() {
                 local owner=$(stat -c "%U:%G" "/etc/sudoers.d/$file" 2>/dev/null || echo "N/A")
                 
                 if [[ "$perms" == "440" ]] || [[ "$perms" == "400" ]]; then
-                    print_success "[$file] Permissões: $perms, Dono: $owner"
+                    print_success "[$file] Permissions: $perms, Owner: $owner"
                 else
-                    print_warning "[$file] Permissões potencialmente inseguras: $perms"
+                    print_warning "[$file] Potentially insecure permissions: $perms"
                 fi
                 
                 echo "sudoers_d_arquivo,$file,perms=$perms,owner=$owner" >> "$CSV_FILE"
             done < <(ls -1 /etc/sudoers.d 2>/dev/null)
         else
-            print_warning "Nenhum arquivo personalizado em /etc/sudoers.d"
+            print_warning "No custom files in /etc/sudoers.d"
         fi
     fi
 }
 
-# Verificar histórico de sudo
+# Check sudo log
 check_sudo_log() {
-    print_header "Verificando Atividade de Sudo (últimos 10 registros)"
+    print_header "Checking Sudo Activity (last 10 records)"
     
     echo "" >> "$CSV_FILE"
-    echo "=== ATIVIDADE RECENTE DE SUDO ===" >> "$CSV_FILE"
+    echo "=== RECENT SUDO ACTIVITY ===" >> "$CSV_FILE"
     echo "" >> "$CSV_FILE"
     
     if [[ -f /var/log/auth.log ]]; then
         local count=$(grep -c "sudo" /var/log/auth.log 2>/dev/null || echo "0")
         echo "total_registros_sudo,$count" >> "$CSV_FILE"
         
-        print_success "Últimos comandos sudo executados:"
+        print_success "Last sudo commands executed:"
         echo ""
         grep "sudo" /var/log/auth.log 2>/dev/null | tail -10 | while IFS= read -r line; do
             echo "  $line"
             echo "sudo_log,$(echo "$line" | sed 's/,/ /g')" >> "$CSV_FILE"
         done
     else
-        print_warning "Arquivo /var/log/auth.log não encontrado"
+        print_warning "File /var/log/auth.log not found"
     fi
 }
 
-# Verificar configuração de password
+# Check password configuration
 check_sudo_password() {
-    print_header "Verificando Configurações de Autenticação Sudo"
+    print_header "Checking Sudo Authentication Settings"
     
     echo "" >> "$CSV_FILE"
-    echo "=== CONFIGURAÇÕES DE AUTENTICAÇÃO ===" >> "$CSV_FILE"
+    echo "=== AUTHENTICATION SETTINGS ===" >> "$CSV_FILE"
     echo "" >> "$CSV_FILE"
     
-    # Verificar se NOPASSWD está configurado
+    # Check if NOPASSWD is configured
     if sudo -l 2>/dev/null | grep -q NOPASSWD; then
-        print_warning "Existem configurações NOPASSWD ativas"
-        echo "nopasswd,ativo,perigo" >> "$CSV_FILE"
+        print_warning "Active NOPASSWD configurations exist"
+        echo "nopasswd,active,danger" >> "$CSV_FILE"
         sudo -l 2>/dev/null | grep NOPASSWD | while IFS= read -r line; do
-            echo "  Comando: $line"
-            echo "nopasswd_comando,$(echo "$line" | sed 's/,/ /g')" >> "$CSV_FILE"
+            echo "  Command: $line"
+            echo "nopasswd_command,$(echo "$line" | sed 's/,/ /g')" >> "$CSV_FILE"
         done
     else
-        print_success "Nenhuma configuração NOPASSWD detectada"
-        echo "nopasswd,inativo,seguro" >> "$CSV_FILE"
+        print_success "No NOPASSWD configuration detected"
+        echo "nopasswd,inactive,secure" >> "$CSV_FILE"
     fi
 }
 
-# Gerar relatório HTML
+# Generate HTML report
 generate_html_report() {
-    print_header "Gerando Relatório HTML"
+    print_header "Generating HTML Report"
     
     cat > "$REPORT_FILE" << 'EOF'
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Auditoria Sudo</title>
+    <title>Sudo Audit Report</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -287,85 +287,85 @@ generate_html_report() {
 <body>
     <div class="container">
         <header>
-            <h1>🔐 Relatório de Auditoria Sudo</h1>
-            <p class="timestamp">Gerado em: <strong>TIMESTAMP_PLACEHOLDER</strong></p>
+            <h1>🔐 Sudo Audit Report</h1>
+            <p class="timestamp">Generated on: <strong>TIMESTAMP_PLACEHOLDER</strong></p>
         </header>
         
         <div class="section">
-            <h2>📋 Resumo Executivo</h2>
+            <h2>📋 Executive Summary</h2>
             <div class="check">
                 <div class="icon success">✓</div>
                 <div class="message">
-                    <strong>Auditoria Completa</strong><br>
-                    Relatório detalhado de permissões e configurações de sudo do sistema
+                    <strong>Complete Audit</strong><br>
+                    Detailed report of system sudo permissions and configurations
                 </div>
             </div>
         </div>
         
         <div class="section">
-            <h2>🔍 Detalhes Técnicos</h2>
-            <p><strong>Sistema:</strong> Linux (Ubuntu)</p>
-            <p><strong>Arquivo sudoers:</strong> /etc/sudoers</p>
-            <p><strong>Diretório de configuração:</strong> /etc/sudoers.d</p>
-            <p><strong>Log de atividade:</strong> /var/log/auth.log</p>
+            <h2>🔍 Technical Details</h2>
+            <p><strong>System:</strong> Linux (Ubuntu)</p>
+            <p><strong>Sudoers file:</strong> /etc/sudoers</p>
+            <p><strong>Configuration directory:</strong> /etc/sudoers.d</p>
+            <p><strong>Activity log:</strong> /var/log/auth.log</p>
         </div>
         
         <div class="section">
-            <h2>📊 Recomendações</h2>
+            <h2>📊 Recommendations</h2>
             <ul style="margin-left: 20px;">
-                <li>Revise regularmente as permissões de sudo</li>
-                <li>Evite usar NOPASSWD a menos que absolutamente necessário</li>
-                <li>Mantenha permissões do arquivo sudoers em 440 ou 400</li>
-                <li>Monitore logs de sudo para atividades suspeitas</li>
-                <li>Use /etc/sudoers.d para configurações por usuário/aplicação</li>
-                <li>Restrinja comandos sudo aos necessários (princípio do menor privilégio)</li>
+                <li>Review sudo permissions regularly</li>
+                <li>Avoid using NOPASSWD unless absolutely necessary</li>
+                <li>Keep sudoers file permissions at 440 or 400</li>
+                <li>Monitor sudo logs for suspicious activity</li>
+                <li>Use /etc/sudoers.d for per-user/application configurations</li>
+                <li>Restrict sudo commands to necessary ones (principle of least privilege)</li>
             </ul>
         </div>
         
         <footer>
-            <p>Relatório gerado automaticamente pelo SUDO PERMISSIONS CHECKER v1.0</p>
-            <p>Para mais informações: https://github.com/1985epma/checklist_linux</p>
+            <p>Report automatically generated by SUDO PERMISSIONS CHECKER v1.0</p>
+            <p>For more information: https://github.com/1985epma/checklist_linux</p>
         </footer>
     </div>
 </body>
 </html>
 EOF
     
-    # Substituir timestamp
-    sed -i "s/TIMESTAMP_PLACEHOLDER/$(date '+%d\/%m\/%Y %H:%M:%S')/g" "$REPORT_FILE"
+    # Replace timestamp
+    sed -i "s/TIMESTAMP_PLACEHOLDER/$(date '+%m\/%d\/%Y %H:%M:%S')/g" "$REPORT_FILE"
     
-    print_success "Relatório HTML gerado: $REPORT_FILE"
+    print_success "HTML report generated: $REPORT_FILE"
 }
 
 # Main
 main() {
     print_header "🔐 SUDO PERMISSIONS CHECKER"
-    echo "Auditoria de permissões e configurações de sudo"
+    echo "Audit of sudo permissions and configurations"
     echo ""
     
     check_root
     create_report_dir
     
-    # Inicializar CSV
-    echo "campo,valor,status" > "$CSV_FILE"
+    # Initialize CSV
+    echo "field,value,status" > "$CSV_FILE"
     
-    # Executar verificações
+    # Execute checks
     check_sudo_config
     check_sudo_users
     check_sudoers_d
     check_sudo_log
     check_sudo_password
     
-    # Gerar relatórios
+    # Generate reports
     generate_html_report
     
-    print_header "✅ Auditoria Concluída"
+    print_header "✅ Audit Completed"
     echo ""
-    print_success "Relatório HTML: $REPORT_FILE"
-    print_success "Relatório CSV: $CSV_FILE"
+    print_success "HTML Report: $REPORT_FILE"
+    print_success "CSV Report: $CSV_FILE"
     echo ""
-    echo "Use os relatórios para auditar e melhorar as configurações de sudo do seu sistema."
+    echo "Use the reports to audit and improve your system's sudo configurations."
 }
 
-# Executar main
+# Execute main
 main "$@"
