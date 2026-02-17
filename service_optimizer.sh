@@ -564,7 +564,7 @@ mode_interactive() {
         read -rp "  Disable this service? [Y/n/s/a/q]: " answer
         
         case ${answer,,} in
-            ""|"s"|"y"|"sim"|"yes")
+            ""|"y"|"sim"|"yes")
                 if disable_service "$service" "$description"; then
                     ((success++))
                 fi
