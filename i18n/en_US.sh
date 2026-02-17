@@ -7,10 +7,12 @@ LANG_NAME="English"
 LANG_SELECT_PROMPT="Select language / Seleccione idioma / Selecione o idioma:"
 LANG_INVALID="Invalid language option"
 
-# Common Messages
+# Common Messages - Standardized Dictionary
+MSG_OK="OK"
 MSG_SUCCESS="Success"
 MSG_ERROR="Error"
 MSG_WARNING="Warning"
+MSG_CRITICAL="Critical"
 MSG_INFO="Information"
 MSG_CHECKING="Checking"
 MSG_COMPLETE="Complete"
@@ -23,6 +25,10 @@ MSG_CANCEL="Cancel"
 MSG_EXIT="Exit"
 MSG_BACK="Back"
 MSG_HELP="Help"
+MSG_LOADING="Loading"
+MSG_READY="Ready"
+MSG_PROCESSING="Processing"
+MSG_DONE="Done"
 
 # Menu
 MENU_TITLE="Main Menu"

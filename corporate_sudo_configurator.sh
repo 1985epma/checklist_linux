@@ -5,21 +5,33 @@
 # Script to configure sudo appropriate for corporate environment
 # Without root privileges, with granular permission control
 # Author: Everton Araujo
-# Version: 1.0
-# Date: 2026-01-13
+# Version: 2.0
+# Date: 2026-02-16
 ################################################################################
 
 set -euo pipefail
 
-# Output colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+################################################################################
+# Internationalization (i18n)
+################################################################################
 
+# Detectar diretório do script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+I18N_FILE="${SCRIPT_DIR}/i18n/i18n.sh"
+
+# Carregar sistema de i18n
+if [[ -f "$I18N_FILE" ]]; then
+    source "$I18N_FILE"
+    init_i18n "$@"
+else
+    echo "Error: i18n system not found at ${I18N_FILE}"
+    exit 1
+fi
+
+################################################################################
 # Variables
+################################################################################
+
 SUDOERS_DIR="/etc/sudoers.d"
 BACKUP_DIR="/root/sudo_backups"
 CURRENT_USER="${SUDO_USER:-$(whoami)}"
@@ -28,39 +40,15 @@ CURRENT_USER="${SUDO_USER:-$(whoami)}"
 # Utility Functions
 ################################################################################
 
-print_header() {
-    echo -e "${BLUE}═══════════════════════════════════════════${NC}"
-    echo -e "${BLUE}$1${NC}"
-    echo -e "${BLUE}═══════════════════════════════════════════${NC}"
-}
-
-print_section() {
-    echo -e "\n${CYAN}→ $1${NC}"
-}
-
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
-}
-
-print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
-}
-
+# Verificar se está rodando como root
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        print_error "This script must be run with sudo"
+        print_error "$SYS_REQUIRES_SUDO"
         exit 1
     fi
 }
 
+# Criar backup dos sudoers
 create_backup() {
     mkdir -p "${BACKUP_DIR}"
     local timestamp=$(date +%Y%m%d_%H%M%S)
@@ -69,13 +57,14 @@ create_backup() {
     if [[ -f /etc/sudoers ]]; then
         cp /etc/sudoers "${backup_file}"
         chmod 600 "${backup_file}"
-        print_success "Backup created: ${backup_file}"
+        print_success "${CORP_BACKUP_CREATED}: ${backup_file}"
     fi
 }
 
+# Validar arquivo sudoers
 validate_sudoers() {
     if ! sudo -l -f "$1" > /dev/null 2>&1; then
-        print_warning "Sudoers validation failed for: $1"
+        print_warning "${CORP_CONFIG_FAILED}: $1"
         return 1
     fi
     return 0
@@ -87,19 +76,19 @@ validate_sudoers() {
 
 show_main_menu() {
     clear
-    print_header "🏢 CORPORATE SUDO CONFIGURATOR v1.0"
+    print_header "$CORP_TITLE"
     echo ""
-    echo "Configure sudo permissions for corporate environment"
+    echo "$CORP_SUBTITLE"
     echo ""
-    echo "  ${CYAN}1${NC}) Configure Sudo for File Reading/Execution"
-    echo "  ${CYAN}2${NC}) Configure Sudo for Package Managers (apt/snap/flatpak)"
-    echo "  ${CYAN}3${NC}) Configure Complete Sudo (without root privileges)"
-    echo "  ${CYAN}4${NC}) Configure Custom Sudoers per User"
-    echo "  ${CYAN}5${NC}) View Current Configurations"
-    echo "  ${CYAN}6${NC}) Restore Backup"
-    echo "  ${CYAN}7${NC}) Exit"
+    echo "  ${I18N_CYAN}1${I18N_NC}) $CORP_MENU_1"
+    echo "  ${I18N_CYAN}2${I18N_NC}) $CORP_MENU_2"
+    echo "  ${I18N_CYAN}3${I18N_NC}) $CORP_MENU_3"
+    echo "  ${I18N_CYAN}4${I18N_NC}) $CORP_MENU_4"
+    echo "  ${I18N_CYAN}5${I18N_NC}) $CORP_MENU_5"
+    echo "  ${I18N_CYAN}6${I18N_NC}) $CORP_MENU_6"
+    echo "  ${I18N_CYAN}7${I18N_NC}) $CORP_MENU_7"
     echo ""
-    read -p "Select an option [1-7]: " choice
+    read -p "$MENU_SELECT [1-7]: " choice
 }
 
 ################################################################################
@@ -107,22 +96,22 @@ show_main_menu() {
 ################################################################################
 
 setup_file_reader() {
-    print_header "📁 Configure Sudo for File Reading/Execution"
+    print_header "📁 $CORP_MENU_1"
     echo ""
     
-    read -p "Which user do you want to configure? [${CURRENT_USER}]: " user
+    read -p "$CORP_SELECT_USER [${CURRENT_USER}]: " user
     user=${user:-$CURRENT_USER}
     
     if ! id "$user" &>/dev/null; then
-        print_error "User $user does not exist"
+        print_error "$CORP_USER_NOT_EXIST: $user"
         return 1
     fi
     
-    read -p "Which directories for reading? (separate with space) [/home /opt /srv]: " dirs
+    read -p "$CORP_SELECT_DIRS [/home /opt /srv]: " dirs
     dirs=${dirs:-"/home /opt /srv"}
     
-    print_section "Configuring read permissions for: $user"
-    print_info "Directories: $dirs"
+    print_section "${MSG_CHECKING}: $user"
+    print_info "$CORP_SELECT_DIRS: $dirs"
     
     local config_file="${SUDOERS_DIR}/corporate_${user}_files"
     
@@ -152,10 +141,10 @@ EOF
     chmod 440 "${config_file}"
     
     if validate_sudoers "${config_file}"; then
-        print_success "Read/execution configuration created!"
-        print_info "File: ${config_file}"
+        print_success "$CORP_CONFIG_CREATED"
+        print_info "${FILE_CREATED}: ${config_file}"
     else
-        print_error "Configuration validation failed"
+        print_error "$CORP_CONFIG_FAILED"
         rm "${config_file}"
         return 1
     fi
