@@ -45,11 +45,12 @@ This project helps sysadmins, DevOps, and security enthusiasts to:
 | `service_optimizer.sh` | Service optimizer for Desktop/Server/Container |
 | `service_optimizer_gui.sh` | 🖥️ GUI version of optimizer (Zenity) |
 | `sudo_permissions_checker.sh` | System sudo permissions audit |
-| `corporate_sudo_configurator.sh` | Corporate sudo configuration tool |
-| `i18n_demo.sh` | Internationalization (i18n) demo |
+| `corporate_sudo_configurator.sh` | 🏢 Corporate sudo configuration tool with granular permissions |
+| `i18n_demo.sh` | Basic internationalization (i18n) demo |
+| `i18n_demo_features.sh` | 🌐 **NEW:** Advanced i18n features showcase |
 
 
-> 🌍 **New:** Internationalization system available! Scripts support multiple languages (pt_BR, en_US, es_ES). See [I18N_README.md](I18N_README.md) for details.
+> 🌍 **New:** Complete internationalization system available! Scripts support multiple languages (pt_BR, en_US, es_ES) with advanced features like pluralization, templates, and formatting. See [I18N_README.md](I18N_README.md) and [I18N_FEATURES.md](I18N_FEATURES.md) for details.
 
 ## 📦 Requirements
 
@@ -168,7 +169,8 @@ security-checklist    # Security audit
 service-optimizer     # Service optimization
 sudo-checker          # Sudo permissions audit
 sudo-configurator     # Corporate sudo setup
-i18n-demo            # Internationalization demo
+i18n-demo            # Basic internationalization demo
+i18n-demo-features   # Advanced i18n features showcase
 ```
 
 **📘 For detailed Docker instructions, see [DOCKER.md](DOCKER.md)**
@@ -486,6 +488,61 @@ Configurations are created in `/etc/sudoers.d/`:
 ✅ Configurations validated before applying
 ✅ Automatic backup of original sudoers
 ✅ Easy rollback in case of error
+
+---
+
+## 🌍 Internationalization (i18n) System
+
+All scripts support multiple languages with advanced i18n features.
+
+### Supported Languages
+
+- 🇧🇷 **pt_BR** - Português (Brasil)
+- 🇬🇧 **en_US** - English (United States)
+- 🇪🇸 **es_ES** - Español (España)
+
+### Change Language
+
+```bash
+# Use --lang parameter
+sudo ./security_checklist.sh --lang en_US
+sudo ./service_optimizer.sh --lang es_ES
+sudo ./corporate_sudo_configurator.sh --lang pt_BR
+
+# Or set environment variable
+export LANG=en_US.UTF-8
+sudo ./security_checklist.sh
+```
+
+### i18n Features Demo
+
+The `i18n_demo_features.sh` script demonstrates all available i18n capabilities:
+
+```bash
+# Run the advanced features demo
+./i18n_demo_features.sh
+
+# Change language
+./i18n_demo_features.sh --lang en_US
+./i18n_demo_features.sh --lang es_ES
+./i18n_demo_features.sh --lang pt_BR
+```
+
+### Advanced i18n Features
+
+| Feature | Description | Example |
+|---------|-------------|----------|
+| 💬 **Translation Keys** | Multi-language text | `translate "WELCOME_MESSAGE"` |
+| 🔢 **Pluralization** | Singular/plural forms | `1 file`, `3 files` |
+| 🎯 **Templates** | Variable substitution | `Hello {name}!` |
+| 🔢 **Number Formatting** | Locale-aware numbers | `1,234.56` (en) / `1.234,56` (pt) |
+| 📅 **Date Formatting** | Locale-aware dates | `Feb 17, 2026` / `17 fev 2026` |
+| 💰 **Currency** | Money formatting | `$1,234.56` / `R$ 1.234,56` |
+
+### Documentation
+
+- **Basic Guide:** [I18N_README.md](I18N_README.md)
+- **Advanced Features:** [I18N_FEATURES.md](I18N_FEATURES.md)
 
 ---
 

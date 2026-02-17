@@ -45,13 +45,15 @@ This project helps sysadmins, DevOps, and security enthusiasts to:
 | `service_optimizer.sh` | Service optimizer for Desktop/Server/Container |
 | `service_optimizer_gui.sh` | 🖥️ GUI version of optimizer (Zenity) |
 | `sudo_permissions_checker.sh` | System sudo permissions audit |
-| `corporate_sudo_configurator.sh` | Corporate sudo configuration tool |
-| `i18n_demo.sh` | Internationalization (i18n) demo |
+| `corporate_sudo_configurator.sh` | 🏢 Corporate sudo configuration tool with granular permissions |
+| `i18n_demo.sh` | Basic internationalization (i18n) demo |
+| `i18n_demo_features.sh` | 🌐 **NEW:** Advanced i18n features showcase |
 
 ## 🌍 Internationalization (i18n)
 - Default README language is English
 - Scripts support multiple languages (pt_BR, en_US, es_ES)
-- See I18N_README.md for details
+- Advanced features: pluralization, templates, number/date formatting
+- See [I18N_README.md](I18N_README.md) and [I18N_FEATURES.md](I18N_FEATURES.md) for details
 
 ## ⚡ Quick Start
 
@@ -76,6 +78,20 @@ sudo ./sudo_permissions_checker.sh
 Corporate Sudo Configurator:
 ```bash
 sudo ./corporate_sudo_configurator.sh
+```
+
+Internationalization Demo:
+```bash
+# Basic demo
+./i18n_demo.sh
+
+# Advanced features demo
+./i18n_demo_features.sh
+
+# Change language
+./i18n_demo_features.sh --lang en_US
+./i18n_demo_features.sh --lang es_ES
+./i18n_demo_features.sh --lang pt_BR
 ```
 
 ## 📦 Requirements

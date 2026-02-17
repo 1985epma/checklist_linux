@@ -45,11 +45,12 @@ Este projeto oferece ferramentas para ajudar administradores de sistemas, profis
 | `service_optimizer.sh` | Otimizador de serviços para Desktop/Servidor/Container |
 | `service_optimizer_gui.sh` | 🖥️ Versão GUI do otimizador (Zenity) |
 | `sudo_permissions_checker.sh` | Verificação de permissões sudo do sistema |
-| `sudo_corporate_config.sh` | Configurador de sudo corporativo seguro |
-| `i18n_demo.sh` | Demonstração do sistema de internacionalização (i18n) |
+| `corporate_sudo_configurator.sh` | 🏢 Configurador de sudo corporativo com permissões granulares |
+| `i18n_demo.sh` | Demonstração básica de internacionalização (i18n) |
+| `i18n_demo_features.sh` | 🌐 **NOVO:** Demonstração avançada de recursos i18n |
 
 
-> 🌍 **Novo:** Sistema de internacionalização disponível! Os scripts suportam múltiplos idiomas (pt_BR, en_US, es_ES). Veja [I18N_README.md](I18N_README.md) para detalhes.
+> 🌍 **Novo:** Sistema completo de internacionalização disponível! Os scripts suportam múltiplos idiomas (pt_BR, en_US, es_ES) com recursos avançados como pluralização, templates e formatação. Veja [I18N_README.md](I18N_README.md) e [I18N_FEATURES.md](I18N_FEATURES.md) para detalhes.
 
 ## 📦 Requisitos
 
@@ -168,7 +169,8 @@ security-checklist    # Auditoria de segurança
 service-optimizer     # Otimização de serviços
 sudo-checker          # Auditoria de permissões sudo
 sudo-configurator     # Configuração sudo corporativa
-i18n-demo            # Demonstração de internacionalização
+i18n-demo            # Demonstração básica de internacionalização
+i18n-demo-features   # Demonstração avançada de recursos i18n
 ```
 
 **📘 Para instruções detalhadas do Docker, veja [DOCKER.md](DOCKER.md)**
@@ -488,6 +490,61 @@ As configurações são criadas em `/etc/sudoers.d/`:
 ✅ Configurações validadas antes de aplicar
 ✅ Backup automático do sudoers original
 ✅ Reversão fácil em caso de erro
+
+---
+
+## 🌍 Sistema de Internacionalização (i18n)
+
+Todos os scripts suportam múltiplos idiomas com recursos avançados de i18n.
+
+### Idiomas Suportados
+
+- 🇧🇷 **pt_BR** - Português (Brasil)
+- 🇬🇧 **en_US** - English (United States)
+- 🇪🇸 **es_ES** - Español (España)
+
+### Alterar Idioma
+
+```bash
+# Usar o parâmetro --lang
+sudo ./security_checklist.sh --lang en_US
+sudo ./service_optimizer.sh --lang es_ES
+sudo ./corporate_sudo_configurator.sh --lang pt_BR
+
+# Ou definir variável de ambiente
+export LANG=pt_BR.UTF-8
+sudo ./security_checklist.sh
+```
+
+### Demonstração de Recursos i18n
+
+O script `i18n_demo_features.sh` demonstra todas as capacidades de i18n disponíveis:
+
+```bash
+# Executar a demonstração de recursos avançados
+./i18n_demo_features.sh
+
+# Alterar idioma
+./i18n_demo_features.sh --lang en_US
+./i18n_demo_features.sh --lang es_ES
+./i18n_demo_features.sh --lang pt_BR
+```
+
+### Recursos Avançados de i18n
+
+| Recurso | Descrição | Exemplo |
+|---------|-------------|----------|
+| 💬 **Chaves de Tradução** | Texto multi-idioma | `translate "WELCOME_MESSAGE"` |
+| 🔢 **Pluralização** | Formas singular/plural | `1 arquivo`, `3 arquivos` |
+| 🎯 **Templates** | Substituição de variáveis | `Olá {nome}!` |
+| 🔢 **Formatação de Números** | Números com locale | `1,234.56` (en) / `1.234,56` (pt) |
+| 📅 **Formatação de Datas** | Datas com locale | `Feb 17, 2026` / `17 fev 2026` |
+| 💰 **Moeda** | Formatação de dinheiro | `$1,234.56` / `R$ 1.234,56` |
+
+### Documentação
+
+- **Guia Básico:** [I18N_README.md](I18N_README.md)
+- **Recursos Avançados:** [I18N_FEATURES.md](I18N_FEATURES.md)
 
 ---
 
